@@ -17,3 +17,14 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.register<JavaExec>("Pixelatte") {
+    group = "application"
+    description = "Runs the Pixelatte parser"
+
+    mainClass = "net.ansinn.pixelatte.Main"
+
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs = listOf("-Xms512m", "-Xmx1024m")
+    args = listOf("help", "")
+}
