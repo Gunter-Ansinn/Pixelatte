@@ -18,7 +18,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.register<JavaExec>("Pixelatte") {
+tasks.register<JavaExec>("Pixelatte - CLI") {
     group = "application"
     description = "Runs the Pixelatte parser"
 
