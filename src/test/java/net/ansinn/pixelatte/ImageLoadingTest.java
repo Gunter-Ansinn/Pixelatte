@@ -7,10 +7,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import jdk.incubator.vector.*;
 
 class ImageLoadingTest {
 
@@ -35,6 +37,17 @@ class ImageLoadingTest {
 
     @RepeatedTest(15)
     void TestLoad() {
+
+        var species = IntVector.SPECIES_PREFERRED;
+        var vectorA = IntVector.fromArray(species, new int[]{1, 2, 3, 4}, 0);
+        var vectorB = IntVector.fromArray(species, new int[]{5, 6, 7, 8}, 0);
+
+        var result = vectorA.add(vectorB);
+
+        var resultArray = new int[species.length()];
+        result.intoArray(resultArray, 0);
+
+        System.out.println("resultArray = " + Arrays.toString(resultArray));
 
         System.out.println("=".repeat(15) + "[" + iterCount++ + "]" + "=".repeat(15));
 

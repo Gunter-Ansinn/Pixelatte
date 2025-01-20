@@ -2,6 +2,12 @@ plugins {
     id("java")
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
 group = "net.ansinn"
 version = "1.0-SNAPSHOT"
 
@@ -27,4 +33,16 @@ tasks.register<JavaExec>("Pixelatte - MAIN") {
     classpath = sourceSets["main"].runtimeClasspath
     jvmArgs = listOf("-Xms512m", "-Xmx1024m")
     args = listOf("help", "")
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.addAll(listOf("--enable-preview", "--add-modules", "jdk.incubator.vector"))
+}
+
+tasks.withType<JavaExec> {
+    jvmArgs = listOf("--enable-preview", "--add-modules", "jdk.incubator.vector")
+}
+
+tasks.withType<Test> {
+    jvmArgs = listOf("--enable-preview", "--add-modules", "jdk.incubator.vector")
 }
