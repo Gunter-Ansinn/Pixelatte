@@ -1,20 +1,15 @@
 package net.ansinn.pixelatte;
 
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import jdk.incubator.vector.*;
-
-class ImageLoadingTest {
+class FileLoadingTest {
 
     static List<String> imagePaths = List.of("basn0g01",
             "basn0g02",
@@ -35,24 +30,13 @@ class ImageLoadingTest {
 
     static int iterCount = 1;
 
-    @RepeatedTest(15)
+    @RepeatedTest(1)
     void TestLoad() {
-
-        var species = IntVector.SPECIES_PREFERRED;
-        var vectorA = IntVector.fromArray(species, new int[]{1, 2, 3, 4}, 0);
-        var vectorB = IntVector.fromArray(species, new int[]{5, 6, 7, 8}, 0);
-
-        var result = vectorA.add(vectorB);
-
-        var resultArray = new int[species.length()];
-        result.intoArray(resultArray, 0);
-
-        System.out.println("resultArray = " + Arrays.toString(resultArray));
 
         System.out.println("=".repeat(15) + "[" + iterCount++ + "]" + "=".repeat(15));
 
         imagePaths.forEach(chunk -> mapRes2File("/png_tests/" + chunk + ".png")
-                .ifPresent(ImageLoadingTest::readFileTimed));
+                .ifPresent(FileLoadingTest::readFileTimed));
 
     }
 
@@ -80,9 +64,7 @@ class ImageLoadingTest {
 
     private static void readFileTimed(File file) {
         var startTime = System.nanoTime();
-
         TextureLoader.readFile(file);
-
         var endTime = System.nanoTime();
 
         System.out.println("Time taken: " + (endTime - startTime) + "ns for: " + file.getName().split("\\|")[0] + " with size of " + getByteMarker(file.length()));

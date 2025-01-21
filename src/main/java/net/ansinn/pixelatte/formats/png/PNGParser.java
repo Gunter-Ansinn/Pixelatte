@@ -15,15 +15,12 @@ public final class PNGParser {
 
     /**
      *
-     * @param inputStream
+     * @param inputBuffer the input buffer data
      * @return
      */
-    public static IntermediaryImage parse(InputStream inputStream) {
+    public static IntermediaryImage parse(ByteBuffer inputBuffer) {
         //Make sure input stream isn't null
-        Objects.requireNonNull(inputStream);
-
-        // Make a channel for easy reading
-        var channel = Channels.newChannel(inputStream);
+        Objects.requireNonNull(inputBuffer, "The input buffer is null");
 
         /*
             We can make conservative assumptions on needed buffer space for chunk type plus length.
@@ -33,8 +30,22 @@ public final class PNGParser {
             In this instance we need to check to see if the starting chunk is a header chunk.
             If it isn't we want to immediately abort any attempts at reading the image.
          */
-        var typeBuffer = ByteBuffer.allocateDirect(4);
-//        channel.read(typeBuffer);
+
+        while (inputBuffer.hasRemaining()) {
+            var chunkLength = inputBuffer.getInt();
+            var chunkName = new byte[4];
+            var chunkData = new byte[chunkLength];
+
+            inputBuffer.get(chunkName);
+            inputBuffer.get(chunkData);
+
+            @SuppressWarnings("unused")
+            var chunkCRC = inputBuffer.getInt();
+
+            // Check to see if this is a valid IHDR
+
+        }
+
         return null;
     }
 
