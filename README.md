@@ -1,4 +1,4 @@
-# Pixelatte
+# Pixelatte (Currently a large WIP with re-implementing old PNG functionality)
 
 Pixelatte is a simple, Java-based image decoder created without external libraries. Originally developed as a tool for game development, it’s now available for anyone interested in exploring image parsing and decoding. Whether you're learning about image formats or need a lightweight solution for your project, Pixelatte has you covered.
 
