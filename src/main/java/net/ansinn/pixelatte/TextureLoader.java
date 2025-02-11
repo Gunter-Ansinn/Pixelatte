@@ -34,8 +34,7 @@ public final class TextureLoader {
 
     private static final HexFormat format = HexFormat.of();
     private static final Map<byte[], Function<ByteBuffer, IntermediaryImage>> FORMAT_REGISTRY = new TreeMap<>(Arrays::compare);
-
-    private static int maxSignature = 0;
+    //TODO: perhaps migrate this Map to a trie?
 
     private TextureLoader() {}
 
@@ -48,10 +47,6 @@ public final class TextureLoader {
      */
     public static void registerFormat(String magicNumber, Function<ByteBuffer, IntermediaryImage> imageProcessor, CollisionRule collisionRule) {
         var magicNumberKey = toHex(magicNumber);
-
-        // Sometimes the simplest solution is the best one.
-        if (maxSignature < magicNumberKey.length)
-            maxSignature = magicNumberKey.length;
 
         switch (collisionRule) {
             case IGNORE -> FORMAT_REGISTRY.putIfAbsent(magicNumberKey, imageProcessor);
@@ -74,22 +69,31 @@ public final class TextureLoader {
      * @return intermediary representation of an image
      */
     public static IntermediaryImage readFile(File file) {
+        var result = new IntermediaryImage();
+
         try(var channel = FileChannel.open(file.toPath(), StandardOpenOption.READ)) {
             var mbb = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
 
 
             // Welcome to suggestions on a better method of parsing out the key please be my guest
             // Tackle this all later.
-            // Assume its all an int array
-            PNGParser.parse(mbb);
+            for (var key : FORMAT_REGISTRY.keySet()) {
+                var parsedKey = new byte[key.length];
+                mbb.get(0, parsedKey);
 
+                var parser = FORMAT_REGISTRY.get(parsedKey);
+
+                if (parser != null) {
+                    return parser.apply(mbb);
+                }
+            }
 
         } catch (IOException exception) {
             System.out.println("Error loading file: " + file.toPath() + " into channel.");
             exception.printStackTrace();
         }
 
-        return new IntermediaryImage();
+        return result;
     }
 
     /**

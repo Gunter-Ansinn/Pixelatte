@@ -11,9 +11,6 @@ class TextureLoaderTest {
 
     @Test
     void registerLoader() {
-        var byteKey = new byte[]{1,0,10,20};
-        var registry = TextureLoader.registry();
-
 
     }
 }

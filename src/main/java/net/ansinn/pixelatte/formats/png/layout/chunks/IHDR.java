@@ -4,16 +4,33 @@ package net.ansinn.pixelatte.formats.png.layout.chunks;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorType, byte compressionMethod, byte filterMethod,
                    byte interlacedMethod) implements Chunk {
 
     public IHDR {
+        if (width <= 0)
+            throw new IllegalArgumentException("Width cannot be less than 1");
+
+        if (height <= 0)
+            throw new IllegalArgumentException("Height cannot be less than 1");
+
+        if (bitDepth <= 0 || bitDepth == 3 || bitDepth == 5 || bitDepth == 6 || (bitDepth > 8 && bitDepth < 16) || bitDepth > 16)
+            throw new IllegalArgumentException("Bit-depth cannot be any number but: ");
+
+        Objects.requireNonNull(colorType, "ColorType cannot be null");
+
         if (compressionMethod != 0)
             throw new IllegalStateException("Invalid PNG image compression method.");
 
         if (filterMethod != 0)
             throw new IllegalStateException("Invalid PNG filter method.");
+
+        if (interlacedMethod < 0 || interlacedMethod > 1)
+            throw new IllegalArgumentException("Invalid interlace method: " + interlacedMethod);
+
+        // TODO validate bitdepths non-laggy way
     }
 
     ByteBuffer getOutputBuffer() {
