@@ -1,5 +1,6 @@
 package net.ansinn.pixelatte.formats.png;
 
+import net.ansinn.ByteBarista.SimpleRecordDecoder;
 import net.ansinn.pixelatte.IntermediaryImage;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -10,13 +11,16 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public final class PNGParser {
+
+    private static final Logger logger = Logger.getLogger(PNGParser.class.getName());
 
     private PNGParser() {}
 
     /**
-     *
+     * Parses a PNG from an already proven inputted bytebuffer
      * @param inputBuffer the input buffer data
      * @return
      */
@@ -91,15 +95,12 @@ public final class PNGParser {
         @SuppressWarnings("unused")
         var chunkCRC = inputBuffer.getInt();
 
-        var width = dataBuffer.getInt();                            // Image width
-        var height = dataBuffer.getInt();                           // Image height
-        var bitDepth = dataBuffer.get();                            // Bit depth of image
-        var colorType = Chunk.ColorType.values()[dataBuffer.get()]; // Color type enum
-        var compressionMethod = dataBuffer.get();                   // compression method of image
-        var filterMethod = dataBuffer.get();                         // filter method of image
-        var interlacedMethod = dataBuffer.get();                    // whether the image uses interlacing or not
-
-        return new IHDR(width,height,bitDepth, colorType, compressionMethod, filterMethod, interlacedMethod);
+        try {
+            return SimpleRecordDecoder.decodeRecord(dataBuffer, IHDR.class);
+        } catch (Exception exception) {
+            logger.warning("Failed to parse PNG header");
+        }
+        return null;
     }
 
 }

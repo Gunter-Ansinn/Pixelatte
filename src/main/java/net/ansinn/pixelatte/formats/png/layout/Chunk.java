@@ -7,21 +7,7 @@ import java.util.HexFormat;
 @SuppressWarnings("unused")
 public interface Chunk {
 
-    default boolean isLarval() {
-        return false;
-    }
-
     HexFormat format = HexFormat.of();
-    String IHDR = "IHDR";
-    String IDAT = "IDAT";
-    String IEND = "IEND";
-
-    // Ancillary chunks
-    String PLTE = "PLTE";
-    String sRGB = "sRGB";
-    String gAMA = "gAMA";
-    String tRNS = "tRNS";
-
 
     enum ColorType {
         Grayscale(new byte[]{1, 2, 4, 8, 16}),
