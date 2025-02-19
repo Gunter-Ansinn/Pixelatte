@@ -4,6 +4,7 @@ package net.ansinn.pixelatte.formats.png.layout.chunks;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Objects;
 
 public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorType, byte compressionMethod, byte filterMethod,
@@ -30,11 +31,17 @@ public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorTy
         if (interlacedMethod < 0 || interlacedMethod > 1)
             throw new IllegalArgumentException("Invalid interlace method: " + interlacedMethod);
 
-        // TODO validate bitdepths non-laggy way
+        if (!containsByte(colorType.getAllowedBitDepths(), bitDepth))
+            throw new IllegalArgumentException("Invalid bit depth: " + bitDepth + " for color type: " + colorType.name() + " allowed bit-depths are: " + Arrays.toString(colorType.getAllowedBitDepths()));
     }
 
-    ByteBuffer getOutputBuffer() {
-        return ByteBuffer.allocate(width * height * calculateBytesPerPixel(colorType(), bitDepth()));
+    private static boolean containsByte(byte[] array, byte target) {
+        for (var b : array) {
+            if (b == target) {
+                return true;
+            }
+        }
+        return false;
     }
 
     int calculateBytesPerPixel(ColorType type, byte bitDepth) {
