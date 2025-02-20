@@ -1,6 +1,7 @@
 package net.ansinn.pixelatte;
 
 import net.ansinn.ByteBarista.SimpleRecordDecoder;
+import net.ansinn.ByteBarista.annotations.UnsignedByte;
 import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
@@ -27,6 +28,6 @@ public class TestImageParse {
         System.out.println("result = " + result);
     }
 
-    public record test(@SimpleRecordDecoder.UnsignedByte int number, byte b) {}
+    public record test(@UnsignedByte int number, byte b) {}
 
 }
