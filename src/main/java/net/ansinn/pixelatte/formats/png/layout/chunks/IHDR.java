@@ -1,14 +1,19 @@
 package net.ansinn.pixelatte.formats.png.layout.chunks;
 
 
+import net.ansinn.pixelatte.formats.png.ChunkRegistry;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorType, byte compressionMethod, byte filterMethod,
                    byte interlacedMethod) implements Chunk {
+
+    private static final Set<Byte> VALID_DEPTHS = Set.of((byte)1, (byte)2, (byte)4, (byte)8, (byte)16);
+
 
     public IHDR {
         if (width <= 0)
@@ -17,7 +22,7 @@ public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorTy
         if (height <= 0)
             throw new IllegalArgumentException("Height cannot be less than 1");
 
-        if (bitDepth <= 0 || bitDepth == 3 || bitDepth == 5 || bitDepth == 6 || (bitDepth > 8 && bitDepth < 16) || bitDepth > 16)
+        if (!VALID_DEPTHS.contains(bitDepth))
             throw new IllegalArgumentException("Bit-depth cannot be any number but: ");
 
         Objects.requireNonNull(colorType, "ColorType cannot be null");
@@ -44,31 +49,26 @@ public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorTy
         return false;
     }
 
-    int calculateBytesPerPixel(ColorType type, byte bitDepth) {
-        return switch (type) {
-            case Grayscale -> switch (bitDepth) {
-                case 1, 2, 4, 8 -> 1;
-                case 16 -> 2;
-                default -> throw new IllegalArgumentException("Invalid bit depth for Greyscale: " + bitDepth);
-            };
-            case EMPTY, EMPTY2 -> 0;
-            case TrueColor -> (bitDepth / 8) * 3;
-            case Indexed -> {
-                if (bitDepth <= 8)
-                    yield 1;
-                throw new IllegalArgumentException("Invalid bit depth for Indexed color: " + bitDepth);
-            }
-            case GreyscaleAlpha -> (bitDepth / 8) * 2;
-            case TrueColorAlpha -> (bitDepth / 8) * 4;
-        };
+    private static int calculateBytesPerPixel(ColorType type, byte bitDepth) {
+        if (type == ColorType.EMPTY || type == ColorType.EMPTY2)
+            throw new IllegalArgumentException("Cannot calculate bytes per pixel for invalid ");
+
+        var bytesPerSample = (bitDepth + 7) / 8;
+        return type.getChannels() * bytesPerSample;
     }
 
     public int getBytesPerPixel() {
         return calculateBytesPerPixel(colorType(), bitDepth());
     }
 
-    public int getLineLength() {
-        return width() * getBytesPerPixel();
+    public int getScanlineByteLength() {
+        var bitsPerPixel = getBytesPerPixel();
+        var totalBits = width * bitsPerPixel;
+        return (totalBits + 7) / 8;
+    }
+
+    public boolean preferSIMD() {
+        return getScanlineByteLength() >= 128 && bitDepth >= 8;
     }
 
     @Override

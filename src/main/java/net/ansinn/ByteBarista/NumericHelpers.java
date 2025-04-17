@@ -2,28 +2,32 @@ package net.ansinn.ByteBarista;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Simple set of methods to read numeric types not explicitly encoded within ByteBuffer.class
+ */
 public class NumericHelpers {
-    static long getUnsignedInt(ByteBuffer buffer) {
+
+    public static long getUnsignedInt(ByteBuffer buffer) {
         var num = buffer.getInt();
         return Integer.toUnsignedLong(num);
     }
 
-    static long getUnsignedShortAsLong(ByteBuffer buffer) {
+    public static long getUnsignedShortAsLong(ByteBuffer buffer) {
         var num = buffer.getShort();
         return Short.toUnsignedLong(num);
     }
 
-    static long getUnsignedByteAsLong(ByteBuffer buffer) {
+    public static long getUnsignedByteAsLong(ByteBuffer buffer) {
         var num = buffer.get();
         return Byte.toUnsignedLong(num);
     }
 
-    static int getUnsignedShortAsInt(ByteBuffer buffer) {
+    public static int getUnsignedShortAsInt(ByteBuffer buffer) {
         var num = buffer.getShort();
         return Short.toUnsignedInt(num);
     }
 
-    static int getUnsignedByteAsInt(ByteBuffer buffer) {
+    public static int getUnsignedByteAsInt(ByteBuffer buffer) {
         var num = buffer.get();
         return Byte.toUnsignedInt(num);
     }

@@ -5,15 +5,24 @@ import net.ansinn.pixelatte.IntermediaryImage;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.logging.Filter;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 public final class PNGParser {
+
+    private static final int IHDR_TAG = ChunkRegistry.toTag("IHDR");
+    private static final int IDAT_TAG = ChunkRegistry.toTag("IDAT");
+    private static final int IEND_TAG = ChunkRegistry.toTag("IEND");
+
 
     private static final Logger logger = Logger.getLogger(PNGParser.class.getName());
 
@@ -42,63 +51,83 @@ public final class PNGParser {
          */
 
         //TODO implement simple record decoder library
-        var header = parseHeader(inputBuffer);
-
-        while (inputBuffer.hasRemaining()) {
-            var chunkLength = inputBuffer.getInt();
-            var chunkName = new byte[4];
-            var chunkData = new byte[chunkLength];
-
-            inputBuffer.get(chunkName);
-            inputBuffer.get(chunkData);
-
-            @SuppressWarnings("unused")
-            var chunkCRC = inputBuffer.getInt();
-
-            // Check to see if this is a valid IHDR
-            System.out.println("Name: " + new String(chunkName));
-            System.out.println("Data Length: " + chunkLength);
-            System.out.println("Data: " + Arrays.toString(chunkData));
-        }
-
-        return null;
-    }
-
-    /**
-     * Dedicated function to parse PNG header chunk rather than go through a dispatch via the existing chunk decoding method.
-     * Reads an image buffer and returns a header chunk record.
-     *
-     * @param inputBuffer incoming image information
-     * @return header chunk
-     */
-    private static IHDR parseHeader(ByteBuffer inputBuffer) {
-        // Bounds checking for safety. It's best not to cause errors where possible.
-        if (inputBuffer.remaining() < 25)
-            throw new IllegalStateException("Image has no space for a header chunk.");
-
-        var chunkLength = inputBuffer.getInt();
-
-        // We have assurances on what this chunk should be so lets be safe
-        if (chunkLength != 13)
-            throw new IllegalStateException("Image header doesn't have proper data length.");
-
-        // Create byte arrays to load in the name and data of the header chunk
-        var chunkName = new byte[4];
-        var chunkData = new byte[chunkLength];
-
-        inputBuffer.get(chunkName);
-        inputBuffer.get(chunkData);
-
-        // Wrap up our inner data within a nice bytebuffer
-        var dataBuffer = ByteBuffer.wrap(chunkData);
-
-        @SuppressWarnings("unused")
-        var chunkCRC = inputBuffer.getInt();
-
         try {
-            return SimpleRecordDecoder.decodeRecord(dataBuffer, IHDR.class);
-        } catch (Exception exception) {
-            logger.warning("Failed to parse PNG header");
+            var headerLen = inputBuffer.getInt();
+            var headerTag = inputBuffer.getInt();
+
+            if (headerTag != IHDR_TAG)
+                throw new IllegalStateException("Image doesn't start with a header chunk.");
+
+            var headerData = new byte[headerLen];
+
+            inputBuffer.get(headerData);
+
+            var headerChunk = (IHDR) ChunkRegistry.decodeChunk(headerTag, headerData, inputBuffer.getInt());
+            System.out.println("headerChunk = " + headerChunk);
+
+            var chunks = new ArrayList<Chunk>(5); // Store generic chunks
+            var data = new ByteArrayOutputStream(); // Store IDAT chunk data
+
+            while (inputBuffer.hasRemaining()) {
+                var chunkLength = inputBuffer.getInt();
+                var chunkTag = inputBuffer.getInt();
+                var chunkData = new byte[chunkLength];
+
+                inputBuffer.get(chunkData);
+
+                @SuppressWarnings("unused")
+                var chunkCRC = inputBuffer.getInt();
+
+                if (chunkTag == IDAT_TAG)
+                    data.writeBytes(chunkData);
+                else if (ChunkRegistry.isRegistered(chunkTag))
+                    chunks.add(ChunkRegistry.decodeChunk(chunkTag, chunkData, chunkCRC));
+                else if (chunkTag == IEND_TAG)
+                    break;
+
+            }
+
+            Inflater inflater = new Inflater();
+            inflater.setInput(data.toByteArray());
+
+            var channels = headerChunk.colorType().getChannels();
+
+            var bitsPerPixel = channels * headerChunk.bitDepth();
+            var bitsPerRow = headerChunk.width() * bitsPerPixel;
+            var bytesPerRow = (bitsPerRow + 7) / 8;
+            var scanlineSize = 1 + bytesPerRow;
+
+            var decompressedSize = headerChunk.height() * scanlineSize;
+            
+            var output = new byte[decompressedSize];
+            inflater.inflate(output);
+            System.out.println("output = " + Arrays.toString(output));
+            System.out.println("output.length = " + output.length);
+
+            var filteredResult = PNGFilter.process(output, headerChunk);
+            System.out.println("filteredResult = " + Arrays.toString(filteredResult));
+            System.out.println("filteredResult.length = " + filteredResult.length);
+
+            int width = 32;
+            int height = 32;
+            int rowBytes = (width + 7) / 8;
+
+            for (int y = 0; y < height; y++) {
+                int rowOffset = y * rowBytes;
+
+                for (int x = 0; x < width; x++) {
+                    int byteIndex = rowOffset + (x / 8);
+                    int bitIndex = 7 - (x % 8); // PNG stores MSB first
+
+                    int bit = (filteredResult[byteIndex] >> bitIndex) & 1;
+                    System.out.print(bit == 1 ? "█" : "░");
+                }
+
+                System.out.print("\n");
+            }
+
+        } catch (IllegalAccessException | NoSuchMethodException | DataFormatException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
