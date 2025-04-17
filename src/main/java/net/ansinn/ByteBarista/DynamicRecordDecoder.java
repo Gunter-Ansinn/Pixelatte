@@ -4,79 +4,95 @@ import net.ansinn.ByteBarista.annotations.UnsignedByte;
 import net.ansinn.ByteBarista.annotations.UnsignedInteger;
 import net.ansinn.ByteBarista.annotations.UnsignedShort;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.invoke.*;
 import java.lang.reflect.RecordComponent;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.function.Function;
 
 public class DynamicRecordDecoder {
 
-    static <T extends Record> MethodHandle buildDecoder(Class<T> recordClazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
-        var components = recordClazz.getRecordComponents();
+    public static <T extends Record> Function<ByteBuffer, T> createDecoder(Class<T> recordClazz) throws NoSuchMethodException, IllegalAccessException, LambdaConversionException {
+        var lookup = MethodHandles.privateLookupIn(recordClazz, MethodHandles.lookup());
+        var decoder = buildDecoder(recordClazz, lookup);
 
-        var deserializers = new MethodHandle[components.length];
-        for (var i = 0; i < components.length; i++) {
-            deserializers[i] = makeDeserializer(components[i]);
-        }
 
-        return MethodHandles.filterArguments(getConstructor(recordClazz), 0, deserializers);
+
+        return null;
     }
 
-    private static MethodHandle makeDeserializer(RecordComponent component) throws NoSuchMethodException, IllegalAccessException {
+    public static <T extends Record> MethodHandle buildDecoder(Class<T> recordClazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
+        var components = recordClazz.getRecordComponents();
+//        var constructor = getConstructor(recordClazz, lookup);
+        var tempConstructor = recordClazz.getDeclaredConstructors()[0];
+        var constructor = lookup.unreflectConstructor(tempConstructor);
+
+        var deserializers = new MethodHandle[components.length];
+
+        for (var i = 0; i < components.length; i++) {
+            var deserializer = makeDeserializer(components[i], lookup);
+            System.out.println("deserializer = " + deserializer);
+            deserializers[i] = deserializer;
+        }
+
+        var bufferedReader = MethodHandles.zero(recordClazz);
+
+        for (var reader : deserializers) {
+            bufferedReader = MethodHandles.collectArguments(bufferedReader, 0, reader);
+        }
+
+        return MethodHandles.foldArguments(constructor, bufferedReader);
+    }
+
+    private static MethodHandle makeDeserializer(RecordComponent component, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
         var type = component.getType();
-        var lookup = MethodHandles.lookup();
 
         if (type.isEnum()) {
-            return MethodHandles.insertArguments(
-                    lookup.findStatic(type, "values", MethodType.methodType(type.arrayType())),
-                    0
-            );
+            var valueHandle = lookup.findStatic(type, "values", MethodType.methodType(type.arrayType()));
+            var ordinal = lookup.findVirtual(ByteBuffer.class, "getInt", MethodType.methodType(int.class));
+
+            return MethodHandles.filterReturnValue(ordinal, valueHandle);
         }
 
         return switch (type.getTypeName().toLowerCase()) {
             case "long" -> {
                 if (component.isAnnotationPresent(UnsignedByte.class))
-                    yield MethodHandles.lookup().findStatic(SimpleRecordDecoder.class, "getUnsignedByteAsLong", MethodType.methodType(long.class, ByteBuffer.class));
+                    yield lookup.findStatic(NumericHelpers.class, "getUnsignedByteAsLong", MethodType.methodType(long.class, ByteBuffer.class));
                 else if (component.isAnnotationPresent(UnsignedShort.class))
-                    yield MethodHandles.lookup().findStatic(SimpleRecordDecoder.class, "getUnsignedShortAsLong", MethodType.methodType(long.class, ByteBuffer.class));
+                    yield lookup.findStatic(NumericHelpers.class, "getUnsignedShortAsLong", MethodType.methodType(long.class, ByteBuffer.class));
                 else if (component.isAnnotationPresent(UnsignedInteger.class))
-                    yield MethodHandles.lookup().findStatic(SimpleRecordDecoder.class, "getUnsignedInt", MethodType.methodType(long.class, ByteBuffer.class));
-                yield MethodHandles.lookup().findVirtual(ByteBuffer.class, "getLong", MethodType.methodType(long.class));
+                    yield lookup.findStatic(NumericHelpers.class, "getUnsignedInt", MethodType.methodType(long.class, ByteBuffer.class));
+                yield lookup.findVirtual(ByteBuffer.class, "getLong", MethodType.methodType(long.class));
             }
             case "int" -> {
                 if (component.isAnnotationPresent(UnsignedByte.class))
-                    yield MethodHandles.lookup().findStatic(SimpleRecordDecoder.class, "getUnsignedByteAsInt", MethodType.methodType(int.class, ByteBuffer.class));
+                    yield lookup.findStatic(NumericHelpers.class, "getUnsignedByteAsInt", MethodType.methodType(int.class, ByteBuffer.class));
                 else if (component.isAnnotationPresent(UnsignedShort.class))
-                    yield MethodHandles.lookup().findStatic(SimpleRecordDecoder.class, "getUnsignedShortAsInt", MethodType.methodType(int.class, ByteBuffer.class));
-                yield MethodHandles.lookup().findVirtual(ByteBuffer.class, "getInt", MethodType.methodType(int.class));
+                    yield lookup.findStatic(NumericHelpers.class, "getUnsignedShortAsInt", MethodType.methodType(int.class, ByteBuffer.class));
+                yield lookup.findVirtual(ByteBuffer.class, "getInt", MethodType.methodType(int.class));
             }
             case "short" ->
-                    MethodHandles.lookup().findVirtual(ByteBuffer.class, "getShort", MethodType.methodType(short.class));
+                    lookup.findVirtual(ByteBuffer.class, "getShort", MethodType.methodType(short.class));
             case "byte" ->
-                    MethodHandles.lookup().findVirtual(ByteBuffer.class, "get", MethodType.methodType(byte.class));
+                    lookup.findVirtual(ByteBuffer.class, "get", MethodType.methodType(byte.class));
 
             case "double" ->
-                    MethodHandles.lookup().findVirtual(ByteBuffer.class, "getDouble", MethodType.methodType(double.class));
+                    lookup.findVirtual(ByteBuffer.class, "getDouble", MethodType.methodType(double.class));
             case "float" ->
-                    MethodHandles.lookup().findVirtual(ByteBuffer.class, "getFloat", MethodType.methodType(float.class));
+                    lookup.findVirtual(ByteBuffer.class, "getFloat", MethodType.methodType(float.class));
 
             case "char" ->
-                    MethodHandles.lookup().findVirtual(ByteBuffer.class, "getChar", MethodType.methodType(char.class));
+                    lookup.findVirtual(ByteBuffer.class, "getChar", MethodType.methodType(char.class));
             default -> throw new IllegalStateException("Unexpected type: " + type.getTypeName());
         };
     }
 
-    private static <T extends Record> MethodHandle getConstructor(final Class<T> recordClazz) throws NoSuchMethodException, IllegalAccessException {
-
-        var lookup = MethodHandles.lookup();
-
+    private static <T extends Record> MethodHandle getConstructor(final Class<T> recordClazz, MethodHandles.Lookup lookup) throws NoSuchMethodException, IllegalAccessException {
         // Get record components
         var components = recordClazz.getRecordComponents();
 
         // Get types of record fields (primitives or enums only)
-        Class<?>[] paramTypes = Arrays.stream(components)
+        var paramTypes = Arrays.stream(components)
                 .map(RecordComponent::getType)
                 .filter(type -> type.isPrimitive() || type.isEnum()) // Filter out non-primitive/enum types
                 .toArray(Class<?>[]::new);

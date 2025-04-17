@@ -1,10 +1,19 @@
 package net.ansinn.pixelatte;
 
+import net.ansinn.ByteBarista.DynamicRecordDecoder;
+import net.ansinn.ByteBarista.NumericHelpers;
 import net.ansinn.ByteBarista.SimpleRecordDecoder;
 import net.ansinn.ByteBarista.annotations.UnsignedByte;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.lang.invoke.LambdaConversionException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 import static net.ansinn.pixelatte.TestUtils.mapRes2File;
 
@@ -17,17 +26,5 @@ public class TestImageParse {
                 .ifPresent(TextureLoader::readFile);
     }
 
-    @Test
-    void testBufferReader() throws IllegalAccessException, NoSuchMethodException {
-        var buffer = ByteBuffer.allocate(100);
-        buffer.put((byte) 10);
-        buffer.put((byte) 5);
-
-        buffer.flip();
-        var result = SimpleRecordDecoder.decodeRecord(buffer, test.class);
-        System.out.println("result = " + result);
-    }
-
-    public record test(@UnsignedByte int number, byte b) {}
 
 }

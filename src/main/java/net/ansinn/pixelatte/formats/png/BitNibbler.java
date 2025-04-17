@@ -88,30 +88,4 @@ public final class BitNibbler {
         return 0;
     }
 
-    public static boolean[][] parseBitDepth1(int[] inflatedBuffer, int width, int height) {
-        boolean[][] image = new boolean[height][width];
-        int bytesPerRow = (width + 7) / 8; // Width in bits, rounded up to nearest byte.
-
-        int bufferIndex = 0;
-        for (int y = 0; y < height; y++) {
-            // First byte of each row is the filter type.
-            int filterType = inflatedBuffer[bufferIndex++];
-
-            // Rest is the pixel data for the row.
-            for (int x = 0; x < width; x++) {
-                // Calculate which byte and bit in the row this pixel belongs to.
-                int byteIndex = x / 8;
-                int bitIndex = 7 - (x % 8); // MSB is the leftmost bit.
-
-                int pixelByte = inflatedBuffer[bufferIndex + byteIndex];
-                boolean pixel = ((pixelByte >> bitIndex) & 1) == 1;
-                image[y][x] = pixel;
-            }
-
-            // Move to the next row.
-            bufferIndex += bytesPerRow;
-        }
-        return image;
-    }
-
 }
