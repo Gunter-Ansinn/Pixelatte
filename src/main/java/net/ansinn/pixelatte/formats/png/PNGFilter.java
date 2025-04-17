@@ -175,7 +175,7 @@ public class PNGFilter {
         return result;
     }
 
-    private static int paethPredictor(int a, int b, int c) {
+    public static int paethPredictor(int a, int b, int c) {
         int p = a + b - c;
         int pa = Math.abs(p - a);
         int pb = Math.abs(p - b);

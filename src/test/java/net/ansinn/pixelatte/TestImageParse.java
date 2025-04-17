@@ -24,6 +24,9 @@ public class TestImageParse {
 
         mapRes2File("/png_tests/basn0g01.png")
                 .ifPresent(TextureLoader::readFile);
+
+        mapRes2File("/png_tests/basn0g02.png")
+                .ifPresent(TextureLoader::readFile);
     }
 
 

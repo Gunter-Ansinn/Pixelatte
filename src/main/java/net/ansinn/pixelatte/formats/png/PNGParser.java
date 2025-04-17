@@ -108,9 +108,11 @@ public final class PNGParser {
             System.out.println("filteredResult = " + Arrays.toString(filteredResult));
             System.out.println("filteredResult.length = " + filteredResult.length);
 
-            int width = 32;
-            int height = 32;
-            int rowBytes = (width + 7) / 8;
+            int width = headerChunk.width();
+            int height = headerChunk.height();
+
+            int rowBits = headerChunk.width() * bitsPerPixel;
+            int rowBytes = headerChunk.getScanlineByteLength();
 
             for (int y = 0; y < height; y++) {
                 int rowOffset = y * rowBytes;
