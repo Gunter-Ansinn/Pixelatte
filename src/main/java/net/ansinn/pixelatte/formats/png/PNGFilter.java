@@ -13,35 +13,51 @@ public class PNGFilter {
 
 
     public static byte[] process(byte[] data, IHDR header) {
-        var bitsPerPixel = header.bitDepth() * header.colorType().getChannels();
-        var rowBits = header.width() * bitsPerPixel;
+        var rowBits = header.width() * header.getBitsPerPixel();
         var rowLength = (rowBits + 7) / 8;
 
-        var bpp = header.getBytesPerPixel();
-
-        var scanlineSize = rowLength + 1;
         var previous = new byte[rowLength];
         var result = new byte[header.height() * rowLength];
 
         for (int y = 0; y < header.height(); y++) {
-            var offset = y * scanlineSize;
-            var filterType = data[offset] & 0xFF;
-            var raw = Arrays.copyOfRange(data, offset + 1, offset + scanlineSize);
-
-            var recon = switch (filterType) {
-                case 0 -> raw;
-                case 1 -> filterSub(raw, bpp);
-                case 2 -> filterUp(raw, previous);
-                case 3 -> filterAverageSIMD(raw, previous, bpp);
-                case 4 -> filterPaethScalar(raw, previous, bpp);
-                default -> throw new IllegalStateException("Invalid filter type: " + filterType);
-            };
-
+            var recon = applyRowFilter(data, y, rowLength, previous, header);
             System.arraycopy(recon, 0, result, y * rowLength, rowLength);
             System.arraycopy(recon, 0, previous, 0, rowLength);
         }
 
         return result;
+    }
+
+    public static byte[] unpackRow(byte[] filteredRow, int rowIndex, IHDR header) {
+        var width = header.width();
+        int bitDepth = header.bitDepth();
+        int channels = header.colorType().getChannels();
+        int offset = rowIndex * width * channels;
+
+        switch (bitDepth) {
+
+        }
+
+        return null;
+    }
+
+    public static byte[] applyRowFilter(byte[] data, int rowIndex, int rowLength, byte[] previous, IHDR header) {
+        // Scanline calculations
+        var scanlineSize = rowLength + 1;
+        var offset = rowIndex * scanlineSize;
+        var filterType = data[offset] & 0xFF;
+        var raw = Arrays.copyOfRange(data, offset + 1, offset + scanlineSize);
+        var bpp = header.getBytesPerPixel();
+
+        // Apply filter to current row
+        return switch (filterType) {
+            case 0 -> raw;
+            case 1 -> filterSub(raw, bpp);
+            case 2 -> filterUp(raw, previous);
+            case 3 -> filterAverageSIMD(raw, previous, bpp);
+            case 4 -> filterPaethScalar(raw, previous, bpp);
+            default -> throw new IllegalStateException("Invalid filter type: " + filterType);
+        };
     }
 
     public static byte[] filterSub(byte[] raw, int bpp) {
