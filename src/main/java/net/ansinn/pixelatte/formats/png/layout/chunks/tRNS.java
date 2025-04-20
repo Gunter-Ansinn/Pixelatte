@@ -2,44 +2,75 @@ package net.ansinn.pixelatte.formats.png.layout.chunks;
 
 
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
+import net.ansinn.pixelatte.formats.png.layout.RawChunk;
+
+import java.nio.ByteBuffer;
+
+import static net.ansinn.pixelatte.formats.png.ChunkRegistry.toTag;
 
 public sealed interface tRNS extends Chunk {
 
-    static Chunk provider(byte[] data, IHDR header) {
+    int TAG = toTag("tRNS");
+
+    static Chunk provider(ByteBuffer data, IHDR header) {
         return switch (header.colorType()) {
-            case Grayscale -> new tRNSGrayscale();
-            case Indexed -> new tRNSIndexed(data); // No processing needed, it's already as-is
-            default -> Empty.EMPTY;
+            case TrueColor -> {
+                if (data.remaining() < 6) {
+                    System.err.print("tRNS chunk too short for TrueColor; expected six bytes, found: " + data.remaining());
+                    yield new RawChunk(TAG, data.array(), 0);
+                }
+
+                var red = Short.toUnsignedInt(data.getShort());
+                var green = Short.toUnsignedInt(data.getShort());
+                var blue = Short.toUnsignedInt(data.getShort());
+                yield new TrueColor(red, green, blue);
+            }
+            case Grayscale -> {
+                if (data.remaining() < 2) {
+                    System.err.println("tRNS chunk too short for Grayscale; expected 2 bytes, found: " + data.remaining());
+                    yield new RawChunk(TAG, data.array(), 0);
+                }
+
+                var gray = Short.toUnsignedInt(data.getShort());
+                yield new Grayscale(gray);
+            }
+            case Indexed -> new Indexed(data.array());
+            default -> {
+                if (!data.hasRemaining()) {
+                    System.err.println("tRNS chunk has no alpha data for Indexed color.");
+                    yield new RawChunk(TAG, data.array(), 0);
+                }
+
+                System.err.println("tRNS is an invalid chunk for color type: " + header.colorType());
+                yield new RawChunk(TAG, data.array(), 0);
+            }
         };
     }
 
-    record tRNSGrayscale() implements Chunk {}
+    /**
+     * Defines the red, green, and blue values which become transparent within an image.
+     * @param red
+     * @param green
+     * @param blue
+     */
+    record TrueColor(int red, int green, int blue) implements tRNS {}
 
     /**
-     * represents a tRNS chunk variant for image type of indexed.
+     * Holds a grayscale value which will be read as fully transparent.
+     * @param grayValue the transparent gray.
+     */
+    record Grayscale(int grayValue) implements tRNS {}
+
+    /**
+     * represents a tRNS chunk variant for image type of indexed where the array corresponds to a palette index.
      * @param alpha indexed
      */
-    record tRNSIndexed(byte[] alpha) implements tRNS {
+    record Indexed(byte[] alpha) implements tRNS {
 
-        public tRNSIndexed {
+        public Indexed {
             if (alpha.length == 0)
                 throw new IllegalStateException("Tried to initialize tRNSIndexed chunk with zero length array.");
         }
-
-        /**
-         * Gets a singular unsigned alpha value from the tRNS chunk
-         * @param index index of alpha value
-         * @return value between 0-255 if successful -1 if error
-         */
-        int unsignedAlpha(int index) {
-
-            if (index <= alpha().length - 1 && alpha().length > 0)
-                return Byte.toUnsignedInt(alpha[index]);
-
-            return -1;
-        }
     }
-
-
 
 }

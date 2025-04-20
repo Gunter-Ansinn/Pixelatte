@@ -12,6 +12,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ChunkRegistry {
@@ -19,8 +20,8 @@ public class ChunkRegistry {
     private static final Map<Integer, Registry> Decoders = new HashMap<>();
 
     static {
-        register("IHDR", IHDR.class);
         register("gAMA", gAMA.class);
+        register("tRNS", tRNS::provider);
     }
 
     public static <T extends Record & Chunk> void register(String chunkName, Class<T> chunkClazz) {
@@ -28,7 +29,7 @@ public class ChunkRegistry {
         Decoders.put(key, new Registry.Automatic(chunkClazz));
     }
 
-    public static <T extends Record & Chunk> void register(String chunkName, Function<ByteBuffer, Chunk> parsingFunction) {
+    public static <T extends Record & Chunk> void register(String chunkName, BiFunction<ByteBuffer, IHDR, Chunk> parsingFunction) {
         var key = toTag(chunkName);
         Decoders.put(key, new Registry.Deferred(parsingFunction));
     }
@@ -42,14 +43,14 @@ public class ChunkRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static Chunk decodeChunk(int key, byte[] data, long crc) throws IllegalAccessException, NoSuchMethodException {
+    public static Chunk decodeChunk(int key, byte[] data, long crc, IHDR header) throws IllegalAccessException, NoSuchMethodException {
         var decoder = getDecoder(key);
 
         return switch (decoder) {
             case Registry.Automatic(var clazz) ->
                     (Chunk) SimpleRecordDecoder.decodeRecord(ByteBuffer.wrap(data), (Class<? extends Record>)clazz);
             case Registry.Deferred(var decodeFunc) ->
-                    decodeFunc.apply(ByteBuffer.wrap(data));
+                    decodeFunc.apply(ByteBuffer.wrap(data), header);
             case Registry.None ignored -> {
                 System.err.println("Unregistered chunk type with id: " + key);
                 yield new RawChunk(key, data, 0);
@@ -70,7 +71,7 @@ public class ChunkRegistry {
     }
 
     public sealed interface Registry {
-        record Deferred(Function<ByteBuffer, Chunk> parser) implements Registry {}
+        record Deferred(BiFunction<ByteBuffer, IHDR, Chunk> parser) implements Registry {}
         record Automatic(Class<? extends Chunk> clazz) implements Registry {}
         record None() implements Registry {}
     }

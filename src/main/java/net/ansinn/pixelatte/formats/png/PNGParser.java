@@ -3,16 +3,12 @@ package net.ansinn.pixelatte.formats.png;
 import net.ansinn.ByteBarista.SimpleRecordDecoder;
 import net.ansinn.pixelatte.IntermediaryImage;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
+import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.*;
-import java.util.logging.Filter;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -41,16 +37,6 @@ public final class PNGParser {
         if (!inputBuffer.hasRemaining())
             throw new IllegalStateException("Malformed PNG, no more data within buffer.");
 
-        /*
-            We can make conservative assumptions on needed buffer space for chunk type plus length.
-            Max Length is 4 bytes like IHDR each character represented by one byte
-            See the spec here: https://www.w3.org/TR/png/#4Concepts.FormatChunks
-
-            In this instance we need to check to see if the starting chunk is a header chunk.
-            If it isn't we want to immediately abort any attempts at reading the image.
-         */
-
-        //TODO implement simple record decoder library
         try {
             var headerLen = inputBuffer.getInt();
             var headerTag = inputBuffer.getInt();
@@ -62,10 +48,8 @@ public final class PNGParser {
 
             inputBuffer.get(headerData);
 
-            var headerChunk = (IHDR) ChunkRegistry.decodeChunk(headerTag, headerData, inputBuffer.getInt());
-            System.out.println("headerChunk = " + headerChunk);
-
-            var chunks = new ArrayList<Chunk>(5); // Store generic chunks
+            var headerChunk = SimpleRecordDecoder.decodeRecord(ByteBuffer.wrap(headerData), IHDR.class);
+            var chunks = new ChunkMap(); // Store generic chunks
             var data = new ByteArrayOutputStream(); // Store IDAT chunk data
 
             while (inputBuffer.hasRemaining()) {
@@ -81,57 +65,45 @@ public final class PNGParser {
                 if (chunkTag == IDAT_TAG)
                     data.writeBytes(chunkData);
                 else if (ChunkRegistry.isRegistered(chunkTag))
-                    chunks.add(ChunkRegistry.decodeChunk(chunkTag, chunkData, chunkCRC));
+                    chunks.addChunk(ChunkRegistry.decodeChunk(chunkTag, chunkData, chunkCRC, headerChunk));
                 else if (chunkTag == IEND_TAG)
                     break;
 
             }
 
-            Inflater inflater = new Inflater();
-            inflater.setInput(data.toByteArray());
-
-            var channels = headerChunk.colorType().getChannels();
-
-            var bitsPerPixel = channels * headerChunk.bitDepth();
-            var bitsPerRow = headerChunk.width() * bitsPerPixel;
-            var bytesPerRow = (bitsPerRow + 7) / 8;
-            var scanlineSize = 1 + bytesPerRow;
-
-            var decompressedSize = headerChunk.height() * scanlineSize;
-            
-            var output = new byte[decompressedSize];
-            inflater.inflate(output);
-            System.out.println("output = " + Arrays.toString(output));
-            System.out.println("output.length = " + output.length);
-
+            var output = inflateBuffer(data.toByteArray(), headerChunk);
             var filteredResult = PNGFilter.process(output, headerChunk);
             System.out.println("filteredResult = " + Arrays.toString(filteredResult));
             System.out.println("filteredResult.length = " + filteredResult.length);
-
-            int width = headerChunk.width();
-            int height = headerChunk.height();
-
-            int rowBits = headerChunk.width() * bitsPerPixel;
-            int rowBytes = headerChunk.getScanlineByteLength();
-
-            for (int y = 0; y < height; y++) {
-                int rowOffset = y * rowBytes;
-
-                for (int x = 0; x < width; x++) {
-                    int byteIndex = rowOffset + (x / 8);
-                    int bitIndex = 7 - (x % 8); // PNG stores MSB first
-
-                    int bit = (filteredResult[byteIndex] >> bitIndex) & 1;
-                    System.out.print(bit == 1 ? "█" : "░");
-                }
-
-                System.out.print("\n");
-            }
+            var unpacked = PNGUnpacker.unpack(filteredResult, headerChunk, chunks);
 
         } catch (IllegalAccessException | NoSuchMethodException | DataFormatException e) {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public static byte[] inflateBuffer(byte[] data, IHDR headerChunk) throws DataFormatException {
+        // Create the inflater for the compressed data
+        Inflater inflater = new Inflater();
+
+        // Set the target data
+        inflater.setInput(data);
+
+        // Calculate the output size and then call inflation code
+        var output = new byte[calculateDecompressedSize(headerChunk)];
+        inflater.inflate(output);
+
+        return output;
+    }
+
+    private static int calculateDecompressedSize(IHDR headerChunk) {
+        var channels = headerChunk.colorType().getChannels();
+        var bitsPerPixel = channels * headerChunk.bitDepth();
+        var bitsPerRow = headerChunk.width() * bitsPerPixel;
+        var bytesPerRow = (bitsPerRow + 7) / 8;
+        var scanlineSize = 1 + bytesPerRow;
+        return headerChunk.height() * scanlineSize;
     }
 
 }

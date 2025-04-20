@@ -57,13 +57,16 @@ public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorTy
         return type.getChannels() * bytesPerSample;
     }
 
+    public int getBitsPerPixel() {
+        return bitDepth * colorType().getChannels();
+    }
+
     public int getBytesPerPixel() {
         return calculateBytesPerPixel(colorType(), bitDepth());
     }
 
     public int getScanlineByteLength() {
-        var bitsPerPixel = getBytesPerPixel();
-        var totalBits = width * bitsPerPixel;
+        var totalBits = width * getBitsPerPixel();
         return (totalBits + 7) / 8;
     }
 
