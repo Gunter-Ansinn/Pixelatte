@@ -1,7 +1,5 @@
 package net.ansinn.pixelatte.formats.png.layout;
 
-import net.ansinn.pixelatte.formats.png.layout.chunks.Empty;
-
 import java.util.HexFormat;
 
 @SuppressWarnings("unused")

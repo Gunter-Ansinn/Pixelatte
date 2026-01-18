@@ -2,7 +2,7 @@ package net.ansinn.pixelatte.formats.png.layout.chunks;
 
 
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
-import net.ansinn.pixelatte.formats.png.layout.RawChunk;
+import net.ansinn.pixelatte.formats.png.layout.ChunkError;
 
 import java.nio.ByteBuffer;
 
@@ -17,7 +17,7 @@ public sealed interface tRNS extends Chunk {
             case TrueColor -> {
                 if (data.remaining() < 6) {
                     System.err.print("tRNS chunk too short for TrueColor; expected six bytes, found: " + data.remaining());
-                    yield new RawChunk(TAG, data.array(), 0);
+                    yield new ChunkError(TAG, data.array(), "tRNS chunk too short for TrueColor; expected six bytes, found: " + data.remaining());
                 }
 
                 var red = Short.toUnsignedInt(data.getShort());
@@ -28,7 +28,7 @@ public sealed interface tRNS extends Chunk {
             case Grayscale -> {
                 if (data.remaining() < 2) {
                     System.err.println("tRNS chunk too short for Grayscale; expected 2 bytes, found: " + data.remaining());
-                    yield new RawChunk(TAG, data.array(), 0);
+                    yield new ChunkError(TAG, data.array(), "tRNS chunk too short for Grayscale; expected 2 bytes, found: " + data.remaining());
                 }
 
                 var gray = Short.toUnsignedInt(data.getShort());
@@ -38,11 +38,11 @@ public sealed interface tRNS extends Chunk {
             default -> {
                 if (!data.hasRemaining()) {
                     System.err.println("tRNS chunk has no alpha data for Indexed color.");
-                    yield new RawChunk(TAG, data.array(), 0);
+                    yield new ChunkError(TAG, data.array(), "tRNS chunk has no alpha data for Indexed color.");
                 }
 
                 System.err.println("tRNS is an invalid chunk for color type: " + header.colorType());
-                yield new RawChunk(TAG, data.array(), 0);
+                yield new ChunkError(TAG, data.array(), "tRNS is an invalid chunk for color type: " + header.colorType());
             }
         };
     }

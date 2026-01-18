@@ -4,7 +4,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
+        languageVersion = JavaLanguageVersion.of(24)
 
     }
 }
@@ -32,7 +32,7 @@ tasks.register<JavaExec>("Pixelatte - MAIN") {
     mainClass = "net.ansinn.pixelatte.Main"
 
     classpath = sourceSets["main"].runtimeClasspath
-    jvmArgs = listOf("-Xms512m", "-Xmx1024m")
+    jvmArgs = listOf("-Xms512m", "-Xmx2048m")
     args = listOf("help", "")
 }
 

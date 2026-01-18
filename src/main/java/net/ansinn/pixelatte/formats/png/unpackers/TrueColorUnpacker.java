@@ -1,6 +1,7 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
 import net.ansinn.pixelatte.DecodedImage;
+import net.ansinn.pixelatte.DecodedImage16;
 import net.ansinn.pixelatte.DecodedImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -53,14 +54,14 @@ public class TrueColorUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGB16, chunkMap);
+        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGB8, chunkMap);
     }
 
     private static DecodedImage unpackTrueColor16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 6;
-        var pixels = new byte[width * height * 4];
+        var pixels = new short[width * height * 4];
         var transparency = chunkMap.getFirst(tRNS.TrueColor.class);
 
         IntStream.range(0, height).parallel().forEach(y -> {
@@ -76,11 +77,6 @@ public class TrueColorUnpacker {
                 var green16 = ((filtered[inOffset + 2] & 0xFF) << 8) | (filtered[inOffset + 3] & 0xFF);
                 var blue16 = ((filtered[inOffset + 4] & 0xFF) << 8) | (filtered[inOffset + 5] & 0xFF);
 
-                // Shift down 8 bits into 8 bit sized colors
-                var red8 = red16 >> 8;
-                var green8 = green16 >> 8;
-                var blue8 = blue16 >> 8;
-
                 var alpha = 0xFF;
                 // Compare against 16 bit values for transparency
                 if (transparency.isPresent()) {
@@ -90,14 +86,14 @@ public class TrueColorUnpacker {
                     }
                 }
 
-                pixels[outOffset]     = (byte) red8;
-                pixels[outOffset + 1] = (byte) green8;
-                pixels[outOffset + 2] = (byte) blue8;
-                pixels[outOffset + 3] = (byte) alpha;
+                pixels[outOffset]     = (short) red16;
+                pixels[outOffset + 1] = (short) green16;
+                pixels[outOffset + 2] = (short) blue16;
+                pixels[outOffset + 3] = (short) alpha;
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new DecodedImage16(width, height, pixels, DecodedImage.Format.RGBA16, chunkMap);
     }
 
 }

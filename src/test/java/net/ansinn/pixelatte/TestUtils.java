@@ -1,5 +1,6 @@
 package net.ansinn.pixelatte;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,4 +31,26 @@ public class TestUtils {
         return Optional.empty();
     }
 
+    public static BufferedImage toBufferedImage(DecodedImage8 image) {
+        int width = image.width();
+        int height = image.height();
+        byte[] pixels = image.pixels();
+
+        BufferedImage buffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int i = (y * width + x) * 4;
+                int r = pixels[i] & 0xFF;
+                int g = pixels[i + 1] & 0xFF;
+                int b = pixels[i + 2] & 0xFF;
+                int a = pixels[i + 3] & 0xFF;
+
+                int argb = (a << 24) | (r << 16) | (g << 8) | b;
+                buffered.setRGB(x, y, argb);
+            }
+        }
+
+        return buffered;
+    }
 }
