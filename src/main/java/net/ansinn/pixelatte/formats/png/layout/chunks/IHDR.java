@@ -1,10 +1,8 @@
 package net.ansinn.pixelatte.formats.png.layout.chunks;
 
 
-import net.ansinn.pixelatte.formats.png.ChunkRegistry;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
@@ -63,6 +61,17 @@ public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorTy
 
     public int getBytesPerPixel() {
         return calculateBytesPerPixel(colorType(), bitDepth());
+    }
+
+    public int getFilteringBpp() {
+        return switch (colorType) {
+            case Grayscale -> (bitDepth == 16 ? 2 : 1);
+            case TrueColor -> (bitDepth == 16 ? 6 : 3);
+            case Indexed -> 1;
+            case GreyscaleAlpha -> (bitDepth == 16 ? 4 : 2);
+            case TrueColorAlpha -> (bitDepth == 16 ? 8 : 4);
+            default -> throw new IllegalStateException("This should not be reachable");
+        };
     }
 
     public int getScanlineByteLength() {

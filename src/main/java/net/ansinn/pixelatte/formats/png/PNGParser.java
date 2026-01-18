@@ -1,14 +1,13 @@
 package net.ansinn.pixelatte.formats.png;
 
 import net.ansinn.ByteBarista.SimpleRecordDecoder;
-import net.ansinn.pixelatte.IntermediaryImage;
-import net.ansinn.pixelatte.formats.png.layout.Chunk;
+import net.ansinn.pixelatte.DecodedImage;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -29,7 +28,7 @@ public final class PNGParser {
      * @param inputBuffer the input buffer data
      * @return
      */
-    public static IntermediaryImage parse(ByteBuffer inputBuffer) {
+    public static DecodedImage parse(ByteBuffer inputBuffer) {
         //Make sure input stream isn't null
         Objects.requireNonNull(inputBuffer, "The input buffer is null");
         inputBuffer.get(new byte[8]); // we simply skip ahead eight bytes regardless of where its being read from.
@@ -39,6 +38,10 @@ public final class PNGParser {
 
         try {
             var headerLen = inputBuffer.getInt();
+
+            if (headerLen < 13 || headerLen > 100)
+                throw new IllegalArgumentException("IHDR length invalid: " + headerLen);
+
             var headerTag = inputBuffer.getInt();
 
             if (headerTag != IHDR_TAG)
@@ -49,6 +52,10 @@ public final class PNGParser {
             inputBuffer.get(headerData);
 
             var headerChunk = SimpleRecordDecoder.decodeRecord(ByteBuffer.wrap(headerData), IHDR.class);
+            System.out.println("header: " + headerChunk);
+            // Skip CRC value
+            inputBuffer.getInt();
+
             var chunks = new ChunkMap(); // Store generic chunks
             var data = new ByteArrayOutputStream(); // Store IDAT chunk data
 
@@ -71,16 +78,19 @@ public final class PNGParser {
 
             }
 
+            if (data.size() <= 0)
+                throw new IllegalStateException("No valid IDAT chunks found");
+
             var output = inflateBuffer(data.toByteArray(), headerChunk);
             var filteredResult = PNGFilter.process(output, headerChunk);
-            System.out.println("filteredResult = " + Arrays.toString(filteredResult));
-            System.out.println("filteredResult.length = " + filteredResult.length);
-            var unpacked = PNGUnpacker.unpack(filteredResult, headerChunk, chunks);
+
+            System.out.println("headerChunk = " + headerChunk);
+
+            return PNGUnpacker.unpack(filteredResult, headerChunk, chunks);
 
         } catch (IllegalAccessException | NoSuchMethodException | DataFormatException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static byte[] inflateBuffer(byte[] data, IHDR headerChunk) throws DataFormatException {

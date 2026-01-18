@@ -2,9 +2,8 @@ package net.ansinn.pixelatte;
 
 import net.ansinn.pixelatte.formats.png.PNGParser;
 
-import javax.imageio.ImageIO;
-import javax.imageio.spi.IIORegistry;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
@@ -33,7 +32,7 @@ import java.util.function.Function;
 public final class TextureLoader {
 
     private static final HexFormat format = HexFormat.of();
-    private static final Map<byte[], Function<ByteBuffer, IntermediaryImage>> FORMAT_REGISTRY = new TreeMap<>(Arrays::compare);
+    private static final Map<byte[], Function<ByteBuffer, DecodedImage>> FORMAT_REGISTRY = new TreeMap<>(Arrays::compare);
     //TODO: perhaps migrate this Map to a trie?
 
     private TextureLoader() {}
@@ -45,7 +44,7 @@ public final class TextureLoader {
      * @param magicNumber    the identifying magic number of an image format.
      * @param imageProcessor the function in charge of processing an image.
      */
-    public static void registerFormat(String magicNumber, Function<ByteBuffer, IntermediaryImage> imageProcessor, CollisionRule collisionRule) {
+    public static void registerFormat(String magicNumber, Function<ByteBuffer, DecodedImage> imageProcessor, CollisionRule collisionRule) {
         var magicNumberKey = toHex(magicNumber);
 
         switch (collisionRule) {
@@ -68,8 +67,7 @@ public final class TextureLoader {
      * @param file file to memory map and quickly read
      * @return intermediary representation of an image
      */
-    public static IntermediaryImage readFile(File file) {
-        var result = new IntermediaryImage();
+    public static DecodedImage readFile(File file) {
 
         try(var channel = FileChannel.open(file.toPath(), StandardOpenOption.READ)) {
             var mbb = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
@@ -91,20 +89,22 @@ public final class TextureLoader {
         } catch (IOException exception) {
             System.out.println("Error loading file: " + file.toPath() + " into channel.");
             exception.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException("uhh");
         }
 
-        return result;
+        return null;
     }
 
     /**
      * Get an immutable copy of the format registry.
      * @return immutable copy of format registry
      */
-    public static Map<byte[], Function<ByteBuffer, IntermediaryImage>> registry() {
+    public static Map<byte[], Function<ByteBuffer, DecodedImage>> registry() {
         return Collections.unmodifiableMap(FORMAT_REGISTRY);
     }
 
-    static IntermediaryImage empty(ByteBuffer stream) {
+    static DecodedImage empty(ByteBuffer stream) {
         System.out.println("Not yet implemented.");
         return null;
     }
