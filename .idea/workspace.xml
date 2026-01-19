@@ -4,10 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Refining record decoder &#10;Added:&#10;- New MethodHandle based system for getting constructors&#10;- Beginnings of new methodhandle based system to decode records without the stored lambda lists&#10;Changed:&#10;- Extracted Size calculations from decoder class into ClassUtils&#10;- Extracted annotations for cleaner looking usage within other classes">
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/ByteBarista/DynamicRecordDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/ByteBarista/DynamicRecordDecoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/ByteBarista/NumericHelpers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/ByteBarista/NumericHelpers.java" afterDir="false" />
+    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Unpackers&#10;Added:&#10;- Unpackers to pull apart filtered pixel data into actual colors&#10;- Tests for Unpackers">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/ChunkError.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/bKGD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/ImagePreviewTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage8.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage8.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/gAMA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/gAMA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/tRNS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/tRNS.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestImageFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestImageFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestImageParse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestImageParse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +40,12 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Pixelatte" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -37,10 +55,11 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Record" />
         <option value="Enum" />
         <option value="JUnit5 Test Class" />
+        <option value="Record" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -68,22 +87,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "main",
-    "jdk.selected.JAVA_MODULE": "openjdk-23",
-    "last_directory_selection": "/Users/gunteransinn/IdeaProjects/Personal/Pixelatte/src/main/java/net/ansinn/ByteBarista/annotations",
-    "last_opened_file_path": "/Users/gunteransinn/IdeaProjects/Personal/Pixelatte/src/main/resources",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "MTProjectConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.DynamicRecordDecoderTest.buildDecoderTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.DynamicRecordDecoderTest.simpleDecoderTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Grayscale.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GrayscaleAlphaUnpackerTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ImagePreviewTest.previewAll.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.IndexedUnpackerTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageFilter.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageFilter.filterAverage_bpp3_shouldApplyCorrectly.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageFilter.filterSub_bpp3_shouldApplyCorrectly.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageFilter.filterUp_bpp3_shouldApplyCorrectly.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageParse.compareAgainstImageIO.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TestImageParse.loadImage.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Tests in 'net.ansinn.pixelatte.unpackers'.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TrueColor.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TrueColorAlphaUnpackerTest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;openjdk-23&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;/Users/gunteransinn/IdeaProjects/Personal/Pixelatte/src/main/java/net/ansinn/ByteBarista/annotations&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/gunteransinn/IdeaProjects/Personal/Pixelatte/src/main/resources&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
@@ -96,41 +133,22 @@
       <recent name="$PROJECT_DIR$/src/main/java/net/ansinn" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
-      <recent name="net.ansinn.ByteBarista.ClassUtils" />
-      <recent name="net.ansinn.ByteBarista.NumericHelpers" />
-      <recent name="DynamicRecordDecoder" />
+      <recent name="net.ansinn.pixelatte.TestUtils" />
+      <recent name="net.ansinn.pixelatte.formats.png.unpackers.TrueColorAlphaUnpacker" />
+      <recent name="net.ansinn.pixelatte.formats.png.unpackers.GrayscaleAlphaUnpacker" />
+      <recent name="net.ansinn.pixelatte.formats.png.unpackers.IndexedUnpacker" />
+      <recent name="net.ansinn.pixelatte.formats.png.unpackers.TrueColorUnpacker" />
     </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
       <recent name="net.ansinn.ByteBarista.annotations" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="net.ansinn.ByteBarista" />
       <recent name="net.ansinn.pixelatte" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.TestImageParse.testDynamicReader">
-    <configuration name="Pixelatte [Pixelatte]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="Pixelatte" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="TestImageParse.loadImage" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.ImagePreviewTest.previewAll">
+    <configuration name="ImagePreviewTest.previewAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -143,7 +161,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.TestImageParse.loadImage&quot;" />
+            <option value="&quot;net.ansinn.pixelatte.ImagePreviewTest.previewAll&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -154,7 +172,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="TestImageParse.testBufferReader" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestImageFilter" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -167,7 +185,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.TestImageParse.testBufferReader&quot;" />
+            <option value="&quot;net.ansinn.pixelatte.TestImageFilter&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -178,7 +196,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="TestImageParse.testDynamicReader" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestImageFilter.filterAverage_bpp3_shouldApplyCorrectly" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -191,7 +209,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.TestImageParse.testDynamicReader&quot;" />
+            <option value="&quot;net.ansinn.pixelatte.TestImageFilter.filterAverage_bpp3_shouldApplyCorrectly&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -202,7 +220,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="TextureLoaderTest.registerLoader" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -215,7 +233,31 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.TextureLoaderTest.registerLoader&quot;" />
+            <option value="&quot;net.ansinn.pixelatte.TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestImageParse.compareAgainstImageIO" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;net.ansinn.pixelatte.TestImageParse.compareAgainstImageIO&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -228,11 +270,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.TestImageParse.testDynamicReader" />
-        <item itemvalue="Gradle.TestImageParse.testBufferReader" />
-        <item itemvalue="Gradle.TestImageParse.loadImage" />
-        <item itemvalue="Gradle.TextureLoaderTest.registerLoader" />
-        <item itemvalue="Gradle.Pixelatte [Pixelatte]" />
+        <item itemvalue="Gradle.ImagePreviewTest.previewAll" />
+        <item itemvalue="Gradle.TestImageParse.compareAgainstImageIO" />
+        <item itemvalue="Gradle.TestImageFilter" />
+        <item itemvalue="Gradle.TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly" />
+        <item itemvalue="Gradle.TestImageFilter.filterAverage_bpp3_shouldApplyCorrectly" />
       </list>
     </recent_temporary>
   </component>
@@ -333,7 +375,31 @@
       <option name="project" value="LOCAL" />
       <updated>1740023842469</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Old filter GONE&#10;Added:&#10;- SIMD filter with java vector incubator&#10;- Added a ChunkRegistry and chunk parser&#10;- Changed up DynamicRecordDecoder a bit&#10;- Refactored a lot of chunk parsing">
+      <option name="closed" value="true" />
+      <created>1744854615438</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1744854615438</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Added filter tests and basic display of black and white images&#10;Added:&#10;- Tests for filtering&#10;- Debug display with text for given textures.">
+      <option name="closed" value="true" />
+      <created>1744857656246</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1744857656247</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Unpackers&#10;Added:&#10;- Unpackers to pull apart filtered pixel data into actual colors&#10;- Tests for Unpackers">
+      <option name="closed" value="true" />
+      <created>1745173477563</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1745173477563</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -360,7 +426,10 @@
     <MESSAGE value="Transitioned Parser&#10;Changed:&#10;- Parser functions now accept ByteBuffers instead of InputStream&#10;Added:&#10;- Beginnings of chunk parsing once again within PNGParser.java" />
     <MESSAGE value="Removed Larval chunk system and implemented alpha of homemade record decoder for PNG chunks&#10;Added:&#10;- My SimpleRecordDecoder one-file library. Will eventually shift this to its own package once it matures more." />
     <MESSAGE value="Refining record decoder &#10;Added:&#10;- New MethodHandle based system for getting constructors&#10;- Beginnings of new methodhandle based system to decode records without the stored lambda lists&#10;Changed:&#10;- Extracted Size calculations from decoder class into ClassUtils&#10;- Extracted annotations for cleaner looking usage within other classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refining record decoder &#10;Added:&#10;- New MethodHandle based system for getting constructors&#10;- Beginnings of new methodhandle based system to decode records without the stored lambda lists&#10;Changed:&#10;- Extracted Size calculations from decoder class into ClassUtils&#10;- Extracted annotations for cleaner looking usage within other classes" />
+    <MESSAGE value="Old filter GONE&#10;Added:&#10;- SIMD filter with java vector incubator&#10;- Added a ChunkRegistry and chunk parser&#10;- Changed up DynamicRecordDecoder a bit&#10;- Refactored a lot of chunk parsing" />
+    <MESSAGE value="Added filter tests and basic display of black and white images&#10;Added:&#10;- Tests for filtering&#10;- Debug display with text for given textures." />
+    <MESSAGE value="Unpackers&#10;Added:&#10;- Unpackers to pull apart filtered pixel data into actual colors&#10;- Tests for Unpackers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Unpackers&#10;Added:&#10;- Unpackers to pull apart filtered pixel data into actual colors&#10;- Tests for Unpackers" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

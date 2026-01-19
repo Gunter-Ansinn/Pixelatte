@@ -4,6 +4,7 @@ import net.ansinn.ByteBarista.SimpleRecordDecoder;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.RawChunk;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
+import net.ansinn.pixelatte.formats.png.layout.chunks.PLTE;
 import net.ansinn.pixelatte.formats.png.layout.chunks.gAMA;
 import net.ansinn.pixelatte.formats.png.layout.chunks.tRNS;
 
@@ -21,6 +22,7 @@ public class ChunkRegistry {
     static {
         register("gAMA", gAMA.class);
         register("tRNS", tRNS::provider);
+        register("PLTE", PLTE::provider);
     }
 
     public static <T extends Record & Chunk> void register(String chunkName, Class<T> chunkClazz) {
