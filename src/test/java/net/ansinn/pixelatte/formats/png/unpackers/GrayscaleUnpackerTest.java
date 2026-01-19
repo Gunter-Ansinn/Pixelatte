@@ -1,4 +1,4 @@
-package net.ansinn.pixelatte.unpackers;
+package net.ansinn.pixelatte.formats.png.unpackers;
 
 import net.ansinn.pixelatte.DecodedImage8;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
