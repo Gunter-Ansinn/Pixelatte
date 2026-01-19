@@ -58,11 +58,54 @@ public final class PNGParser {
             inputBuffer.getInt();
 
             var chunks = new ChunkMap(); // Store generic chunks
-            var data = new ByteArrayOutputStream(); // Store IDAT chunk data
+
+            var inflater = new Inflater();
+            var filteredResult = new byte[calculateDecompressedSize(headerChunk)];
+            var decompressionOffset = 0;
+
 
             while (inputBuffer.hasRemaining()) {
                 var chunkLength = inputBuffer.getInt();
                 var chunkTag = inputBuffer.getInt();
+
+                if (chunkTag == IDAT_TAG) {
+                    // Prepare a chunk data view to avoid allocation of new byte[] arrays
+                    var oldLimit = inputBuffer.limit();
+                    inputBuffer.limit(inputBuffer.position() + chunkLength);
+
+                    // Allocate a reusable byte array
+                    byte[] chunkScratch = new byte[8192]; // About 8kb should be appropriate
+                    var bytesProcessed = 0;
+
+                    while (bytesProcessed < chunkLength) {
+                        var toRead = Math.min(chunkScratch.length, chunkLength - bytesProcessed);
+                        inputBuffer.get(chunkScratch, 0, toRead);
+
+                        inflater.setInput(chunkScratch, 0, toRead);
+
+                        try {
+                            while (!inflater.needsInput()) {
+                                var inflatedBytes = inflater.inflate(filteredResult, decompressionOffset, filteredResult.length - decompressionOffset);
+
+                                if (inflatedBytes == 0)
+                                    break;
+
+                                decompressionOffset += inflatedBytes;
+                            }
+                        } catch (DataFormatException e) {
+                            throw new RuntimeException("Corrupt PNG data", e);
+                        }
+
+                        bytesProcessed += toRead;
+                    }
+
+                    // Restore limit
+                    inputBuffer.limit(oldLimit);
+                    inputBuffer.getInt(); // skip CRC
+
+                    continue;
+                }
+
                 var chunkData = new byte[chunkLength];
 
                 inputBuffer.get(chunkData);
@@ -70,43 +113,24 @@ public final class PNGParser {
                 @SuppressWarnings("unused")
                 var chunkCRC = inputBuffer.getInt();
 
-                if (chunkTag == IDAT_TAG)
-                    data.writeBytes(chunkData);
-                else if (ChunkRegistry.isRegistered(chunkTag))
+                if (ChunkRegistry.isRegistered(chunkTag))
                     chunks.addChunk(ChunkRegistry.decodeChunk(chunkTag, chunkData, chunkCRC, headerChunk));
                 else if (chunkTag == IEND_TAG)
                     break;
 
             }
 
-            if (data.size() <= 0)
-                throw new IllegalStateException("No valid IDAT chunks found");
-
-            var output = inflateBuffer(data.toByteArray(), headerChunk);
-            var filteredResult = PNGFilter.process(output, headerChunk);
+            var finalPixels = PNGFilter.process(filteredResult, headerChunk);
 
             System.out.println("headerChunk = " + headerChunk);
 
-            return PNGUnpacker.unpack(filteredResult, headerChunk, chunks);
+            return PNGUnpacker.unpack(finalPixels, headerChunk, chunks);
 
-        } catch (IllegalAccessException | NoSuchMethodException | DataFormatException e) {
+        } catch (IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static byte[] inflateBuffer(byte[] data, IHDR headerChunk) throws DataFormatException {
-        // Create the inflater for the compressed data
-        Inflater inflater = new Inflater();
-
-        // Set the target data
-        inflater.setInput(data);
-
-        // Calculate the output size and then call inflation code
-        var output = new byte[calculateDecompressedSize(headerChunk)];
-        inflater.inflate(output);
-
-        return output;
-    }
 
     private static int calculateDecompressedSize(IHDR headerChunk) {
         var channels = headerChunk.colorType().getChannels();
