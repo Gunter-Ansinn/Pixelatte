@@ -32,6 +32,6 @@ public class ChunkMap {
         if (list == null)
             return List.of();
 
-        return list.stream().map(chunk -> (T) chunk).toList();
+        return (List<T>) Collections.unmodifiableList(list);
     }
 }
