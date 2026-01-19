@@ -54,7 +54,7 @@ public class TrueColorUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGB8, chunkMap);
+        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
     }
 
     private static DecodedImage unpackTrueColor16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {

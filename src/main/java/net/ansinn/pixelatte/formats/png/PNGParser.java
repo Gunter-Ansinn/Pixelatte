@@ -106,8 +106,8 @@ public final class PNGParser {
                     continue;
                 }
 
+                // Load our chunk data into memory
                 var chunkData = new byte[chunkLength];
-
                 inputBuffer.get(chunkData);
 
                 @SuppressWarnings("unused")

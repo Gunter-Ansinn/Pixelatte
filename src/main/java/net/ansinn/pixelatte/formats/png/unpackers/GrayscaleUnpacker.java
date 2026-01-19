@@ -1,6 +1,7 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
 import net.ansinn.pixelatte.DecodedImage;
+import net.ansinn.pixelatte.DecodedImage16;
 import net.ansinn.pixelatte.DecodedImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -154,7 +155,7 @@ public class GrayscaleUnpacker {
     private static DecodedImage unpackGrayscale16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         int width = header.width();
         int height = header.height();
-        byte[] pixels = new byte[width * height * 4];
+        short[] pixels = new short[width * height * 4];
         var transparency = chunkMap.getFirst(tRNS.Grayscale.class);
 
         IntStream.range(0, height).parallel().forEach(y -> {
@@ -165,7 +166,7 @@ public class GrayscaleUnpacker {
                 int inOffset = rowIn + x * 2;
                 int gray16 = ((filtered[inOffset] & 0xFF) << 8) | (filtered[inOffset + 1] & 0xFF);
                 int gray = gray16 >> 8; // take high byte only
-                int alpha = 0xFF;
+                int alpha = 0xFFFF;
 
                 if (transparency.isPresent() && gray16 == transparency.get().grayValue())
                     alpha = 0;
@@ -178,6 +179,6 @@ public class GrayscaleUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.GRAY8, chunkMap);
+        return new DecodedImage16(width, height, pixels, DecodedImage.Format.GRAY16, chunkMap);
     }
 }

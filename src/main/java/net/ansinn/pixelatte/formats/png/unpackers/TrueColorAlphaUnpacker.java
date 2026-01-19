@@ -1,5 +1,9 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
+import jdk.incubator.vector.ByteVector;
+import jdk.incubator.vector.ShortVector;
+import jdk.incubator.vector.VectorShuffle;
+import jdk.incubator.vector.VectorSpecies;
 import net.ansinn.pixelatte.DecodedImage;
 import net.ansinn.pixelatte.DecodedImage16;
 import net.ansinn.pixelatte.DecodedImage8;
@@ -9,6 +13,10 @@ import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 import java.util.stream.IntStream;
 
 public class TrueColorAlphaUnpacker {
+
+    private static final VectorSpecies<Byte> BYTE_SPECIES = ByteVector.SPECIES_PREFERRED;
+    private static final VectorSpecies<Short> SHORT_SPECIES = ShortVector.SPECIES_PREFERRED;
+
     public static DecodedImage unpackTrueColorAlpha(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         return switch (header.bitDepth()) {
             case 8 -> unpackTrueColorAlpha8Bit(filtered, header, chunkMap);
@@ -24,20 +32,7 @@ public class TrueColorAlphaUnpacker {
         var bpp = 4;
         var pixels = new byte[width * height * 4];
 
-        IntStream.range(0, height).parallel().forEach(y -> {
-            var rowIn = y * width * bpp;
-            var rowOut = y * width * 4;
-
-            for (int x = 0; x < width; x++) {
-                var inOffset = rowIn + x * 4;
-                var outOffset = rowOut + x * 4;
-
-                pixels[outOffset] = filtered[inOffset];
-                pixels[outOffset + 1] = filtered[inOffset + 1];
-                pixels[outOffset + 2] = filtered[inOffset + 2];
-                pixels[outOffset + 3] = filtered[inOffset + 3];
-            }
-        });
+        System.arraycopy(filtered, 0, pixels, 0, width * height * 4);
 
         return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
     }
@@ -49,26 +44,46 @@ public class TrueColorAlphaUnpacker {
 
         var pixels = new short[width * height * 4];
 
+        // Pre calculate shuffle pattern to swap bytes from big endian to little endian
+        var byteSwapShuffle = VectorShuffle.fromOp(BYTE_SPECIES, i -> i ^ 1);
+
         IntStream.range(0, height).parallel().forEach(y -> {
             var rowIn = y * width * bpp;
             var rowOut = y * width * 4;
 
-            for (int x = 0; x < width; x++) {
-                var inOffset = rowIn + x * bpp;
-                var outOffset = rowOut + x * 4;
+            var totalShorts = width * 4;
+            var loopLimit = totalShorts - SHORT_SPECIES.length();
 
-                var red = ((filtered[inOffset] & 0xFF) << 8) | (filtered[inOffset + 1] & 0xFF);
-                var green = ((filtered[inOffset + 2] & 0xFF) << 8) | (filtered[inOffset + 3] & 0xFF);
-                var blue = ((filtered[inOffset + 4] & 0xFF) << 8) | (filtered[inOffset + 5] & 0xFF);
-                var alpha = ((filtered[inOffset + 6] & 0xFF) << 8) | (filtered[inOffset + 7] & 0xFF);
+            var byteIndex = 0;
 
-                pixels[outOffset] = (short) red;
-                pixels[outOffset + 1] = (short) green;
-                pixels[outOffset + 2] = (short) blue;
-                pixels[outOffset + 3] = (short) alpha;
+            // Vector logic
+            for (; byteIndex < loopLimit; byteIndex += SHORT_SPECIES.length()) {
+                // Load our raw bytes
+                var byteVec = ByteVector.fromArray(BYTE_SPECIES, filtered, rowIn + (byteIndex * 2));
+
+                byteVec = byteVec.rearrange(byteSwapShuffle);
+
+                var shortVec = byteVec.reinterpretAsShorts();
+                shortVec.intoArray(pixels, rowOut + byteIndex);
+            }
+
+            // Scalar cleanup
+            for (; byteIndex < totalShorts; byteIndex += 4) {
+                int inOffset = rowIn + (byteIndex * 2);
+                int outOffset = rowOut + byteIndex;
+
+                short r = (short) (((filtered[inOffset] & 0xFF) << 8) | (filtered[inOffset + 1] & 0xFF));
+                short g = (short) (((filtered[inOffset + 2] & 0xFF) << 8) | (filtered[inOffset + 3] & 0xFF));
+                short b = (short) (((filtered[inOffset + 4] & 0xFF) << 8) | (filtered[inOffset + 5] & 0xFF));
+                short a = (short) (((filtered[inOffset + 6] & 0xFF) << 8) | (filtered[inOffset + 7] & 0xFF));
+
+                pixels[outOffset] = r;
+                pixels[outOffset + 1] = g;
+                pixels[outOffset + 2] = b;
+                pixels[outOffset + 3] = a;
             }
         });
 
-        return new DecodedImage16(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new DecodedImage16(width, height, pixels, DecodedImage.Format.RGBA16, chunkMap);
     }
 }
