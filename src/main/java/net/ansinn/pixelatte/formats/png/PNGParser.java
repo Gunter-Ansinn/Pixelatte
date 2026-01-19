@@ -22,6 +22,14 @@ public final class PNGParser {
 
     private static final Logger logger = Logger.getLogger(PNGParser.class.getName());
 
+    // We want to pre-allocate "heavy hitters" to be a thread local object
+    private static final ThreadLocal<ParserResources> ThreadLocalResources = ThreadLocal.withInitial(ParserResources::new);
+    private static class ParserResources {
+        final Inflater inflater = new Inflater();
+        final byte[] scratch = new byte[8192];
+        final byte[] headerSkip = new byte[8];
+    }
+
     private PNGParser() {}
 
     /**
@@ -30,9 +38,11 @@ public final class PNGParser {
      * @return
      */
     public static DecodedImage parse(ByteBuffer inputBuffer) {
+        var resources = ThreadLocalResources.get();
+
         //Make sure input stream isn't null
         Objects.requireNonNull(inputBuffer, "The input buffer is null");
-        inputBuffer.get(new byte[8]); // we simply skip ahead eight bytes regardless of where its being read from.
+        inputBuffer.get(resources.headerSkip); // we simply skip ahead eight bytes regardless of where its being read from.
 
         if (!inputBuffer.hasRemaining())
             throw new IllegalStateException("Malformed PNG, no more data within buffer.");
@@ -53,13 +63,14 @@ public final class PNGParser {
             inputBuffer.get(headerData);
 
             var headerChunk = SimpleRecordDecoder.decodeRecord(ByteBuffer.wrap(headerData), IHDR.class);
-            System.out.println("header: " + headerChunk);
+
             // Skip CRC value
             inputBuffer.getInt();
 
             var chunks = new ChunkMap(); // Store generic chunks
 
-            var inflater = new Inflater();
+            var inflater = resources.inflater;
+            inflater.reset();
             var filteredResult = new byte[calculateDecompressedSize(headerChunk)];
             var decompressionOffset = 0;
 
@@ -74,7 +85,7 @@ public final class PNGParser {
                     inputBuffer.limit(inputBuffer.position() + chunkLength);
 
                     // Allocate a reusable byte array
-                    byte[] chunkScratch = new byte[8192]; // About 8kb should be appropriate
+                    byte[] chunkScratch = resources.scratch; // About 8kb should be appropriate
                     var bytesProcessed = 0;
 
                     while (bytesProcessed < chunkLength) {
@@ -122,7 +133,7 @@ public final class PNGParser {
 
             var finalPixels = PNGFilter.process(filteredResult, headerChunk);
 
-            System.out.println("headerChunk = " + headerChunk);
+
 
             return PNGUnpacker.unpack(finalPixels, headerChunk, chunks);
 

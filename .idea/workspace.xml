@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Optimized unpackers with pre-computed LUD tables and Vector operations where possible">
-      <change afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/TestImageFilter.java" afterDir="false" />
+    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestImageFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestImageParse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/TestImageParse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/unpackers/GrayscaleAlphaUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/unpackers/GrayscaleUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/unpackers/IndexedUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/unpackers/TrueColorAlphaUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/unpackers/TrueColorUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpackerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +78,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.BenchmarkTest.benchmarkParsers.executor": "Run",
     "Gradle.DynamicRecordDecoderTest.buildDecoderTest.executor": "Run",
     "Gradle.DynamicRecordDecoderTest.simpleDecoderTest.executor": "Run",
     "Gradle.Grayscale.executor": "Run",
@@ -148,7 +141,31 @@
       <recent name="net.ansinn.pixelatte" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.TestImageFilter">
+  <component name="RunManager" selected="Gradle.BenchmarkTest.benchmarkParsers">
+    <configuration name="BenchmarkTest.benchmarkParsers" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;net.ansinn.pixelatte.BenchmarkTest.benchmarkParsers&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="ImagePreviewTest.previewAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -221,30 +238,6 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="TestImageParse.compareAgainstImageIO" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -271,11 +264,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.BenchmarkTest.benchmarkParsers" />
         <item itemvalue="Gradle.TestImageFilter" />
         <item itemvalue="Gradle.ImagePreviewTest.previewAll" />
         <item itemvalue="Gradle.TestImageParse.compareAgainstImageIO" />
         <item itemvalue="Gradle.Test8Bit.basn0g08" />
-        <item itemvalue="Gradle.TestImageFilter.filterPaeth_bpp3_shouldApplyCorrectly" />
       </list>
     </recent_temporary>
   </component>
@@ -432,7 +425,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768844716184</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats.">
+      <option name="closed" value="true" />
+      <created>1768846978346</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1768846978346</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -466,7 +467,8 @@
     <MESSAGE value="Updated filtering to stop spawning new arrays and deal directly with canonical arrays." />
     <MESSAGE value="Optimized chunkMap slightly by reducing list allocations. Also changed PNG parser to remove memory spiking." />
     <MESSAGE value="Optimized unpackers with pre-computed LUD tables and Vector operations where possible" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimized unpackers with pre-computed LUD tables and Vector operations where possible" />
+    <MESSAGE value="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats." />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
