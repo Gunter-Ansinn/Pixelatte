@@ -15,7 +15,7 @@ public class ImagePreviewTest {
     @Test
     void previewAll() throws Exception {
 
-        var result = mapRes2File("/png_tests/basn0g08.png")
+        var result = mapRes2File("/png_tests/basn0g16.png")
                 .map(TextureLoader::readFile);
 
 

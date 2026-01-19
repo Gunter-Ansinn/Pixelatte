@@ -18,6 +18,7 @@ public final class PNGParser {
     private static final int IDAT_TAG = ChunkRegistry.toTag("IDAT");
     private static final int IEND_TAG = ChunkRegistry.toTag("IEND");
 
+    private static final int IHDR_BYTE_SIZE = 13;
 
     private static final Logger logger = Logger.getLogger(PNGParser.class.getName());
 
@@ -39,7 +40,7 @@ public final class PNGParser {
         try {
             var headerLen = inputBuffer.getInt();
 
-            if (headerLen < 13 || headerLen > 100)
+            if (headerLen < IHDR_BYTE_SIZE || headerLen > 100)
                 throw new IllegalArgumentException("IHDR length invalid: " + headerLen);
 
             var headerTag = inputBuffer.getInt();
