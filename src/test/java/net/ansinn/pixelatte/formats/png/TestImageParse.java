@@ -1,29 +1,17 @@
-package net.ansinn.pixelatte;
+package net.ansinn.pixelatte.formats.png;
 
-import net.ansinn.ByteBarista.DynamicRecordDecoder;
-import net.ansinn.ByteBarista.NumericHelpers;
-import net.ansinn.ByteBarista.SimpleRecordDecoder;
-import net.ansinn.ByteBarista.annotations.UnsignedByte;
+import net.ansinn.pixelatte.DecodedImage8;
+import net.ansinn.pixelatte.TextureLoader;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.lang.invoke.LambdaConversionException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
 
 import static net.ansinn.pixelatte.TestUtils.mapRes2File;
-import static net.ansinn.pixelatte.TestUtils.toBufferedImage;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestImageParse {

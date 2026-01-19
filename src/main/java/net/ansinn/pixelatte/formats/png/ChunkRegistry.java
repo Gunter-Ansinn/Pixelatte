@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+// Stops IntelliJ from telling me chunk names are mispronounced.
+@SuppressWarnings("SpellCheckingInspection")
 public class ChunkRegistry {
 
     private static final Map<Integer, Registry> Decoders = new HashMap<>();

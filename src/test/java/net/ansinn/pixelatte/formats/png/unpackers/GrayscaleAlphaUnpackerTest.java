@@ -1,4 +1,4 @@
-package net.ansinn.pixelatte.unpackers;
+package net.ansinn.pixelatte.formats.png.unpackers;
 
 import net.ansinn.pixelatte.DecodedImage16;
 import net.ansinn.pixelatte.DecodedImage8;
