@@ -1,6 +1,6 @@
 package net.ansinn.pixelatte.formats.png;
 
-import net.ansinn.pixelatte.DecodedImage8;
+import net.ansinn.pixelatte.output.DecodedImage8;
 import net.ansinn.pixelatte.TextureLoader;
 import org.junit.jupiter.api.Test;
 

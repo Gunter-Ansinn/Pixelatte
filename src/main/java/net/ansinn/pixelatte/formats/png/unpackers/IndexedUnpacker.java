@@ -1,7 +1,7 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.DecodedImage;
-import net.ansinn.pixelatte.DecodedImage8;
+import net.ansinn.pixelatte.output.DecodedImage;
+import net.ansinn.pixelatte.output.DecodedImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 import net.ansinn.pixelatte.formats.png.layout.chunks.PLTE;

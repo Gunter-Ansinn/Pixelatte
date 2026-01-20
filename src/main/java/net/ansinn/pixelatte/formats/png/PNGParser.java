@@ -1,11 +1,10 @@
 package net.ansinn.pixelatte.formats.png;
 
 import net.ansinn.ByteBarista.SimpleRecordDecoder;
-import net.ansinn.pixelatte.DecodedImage;
+import net.ansinn.pixelatte.output.DecodedImage;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.logging.Logger;

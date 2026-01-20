@@ -1,7 +1,6 @@
 package net.ansinn.pixelatte.comparisons;
 
-import net.ansinn.pixelatte.DecodedImage;
-import net.ansinn.pixelatte.DecodedImage8;
+import net.ansinn.pixelatte.output.DecodedImage8;
 import net.ansinn.pixelatte.Main;
 
 import javax.imageio.ImageIO;

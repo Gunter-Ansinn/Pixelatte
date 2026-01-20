@@ -4,9 +4,9 @@ import jdk.incubator.vector.ByteVector;
 import jdk.incubator.vector.ShortVector;
 import jdk.incubator.vector.VectorShuffle;
 import jdk.incubator.vector.VectorSpecies;
-import net.ansinn.pixelatte.DecodedImage;
-import net.ansinn.pixelatte.DecodedImage16;
-import net.ansinn.pixelatte.DecodedImage8;
+import net.ansinn.pixelatte.output.DecodedImage;
+import net.ansinn.pixelatte.output.DecodedImage16;
+import net.ansinn.pixelatte.output.DecodedImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
