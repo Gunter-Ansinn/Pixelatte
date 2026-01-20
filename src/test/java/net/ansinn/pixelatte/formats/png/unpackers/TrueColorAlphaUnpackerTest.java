@@ -1,12 +1,10 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.DecodedImage16;
-import net.ansinn.pixelatte.DecodedImage8;
+import net.ansinn.pixelatte.output.DecodedImage16;
+import net.ansinn.pixelatte.output.DecodedImage8;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
-import net.ansinn.pixelatte.formats.png.unpackers.TrueColorAlphaUnpacker;
-import net.ansinn.pixelatte.formats.png.unpackers.TrueColorUnpacker;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

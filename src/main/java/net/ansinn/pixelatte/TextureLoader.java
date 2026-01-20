@@ -1,6 +1,7 @@
 package net.ansinn.pixelatte;
 
 import net.ansinn.pixelatte.formats.png.PNGParser;
+import net.ansinn.pixelatte.output.DecodedImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +33,94 @@ import java.util.function.Function;
 public final class TextureLoader {
 
     private static final HexFormat format = HexFormat.of();
-    private static final Map<byte[], Function<ByteBuffer, DecodedImage>> FORMAT_REGISTRY = new TreeMap<>(Arrays::compare);
-    //TODO: perhaps migrate this Map to a trie?
+
+    // Replaces the Map with a specialized Trie root
+    private static final ByteTrieNode ROOT = new ByteTrieNode();
 
     private TextureLoader() {}
+
+    /**
+     * Specialized Trie Node for byte-based lookups.
+     * Uses simple arrays (SoA - Structure of Arrays style) instead of Maps to keep nodes lightweight and cache-friendly.
+     * Since magic number branching is low (usually < 5 branches per byte), a linear scan over 
+     * a tiny array is faster than a HashMap lookup.
+     */
+    private static class ByteTrieNode {
+        byte[] keys = new byte[0];
+        ByteTrieNode[] children = new ByteTrieNode[0];
+        Function<ByteBuffer, DecodedImage> parser;
+
+        void add(byte[] signature, int index, Function<ByteBuffer, DecodedImage> parser, CollisionRule rule) {
+            // Base case: We've consumed the entire signature
+            if (index == signature.length) {
+                if (this.parser != null && rule == CollisionRule.IGNORE) {
+                    return; // Collision: Ignore new parser
+                }
+                this.parser = parser; // Set/Overwrite parser
+                return;
+            }
+
+            byte currentByte = signature[index];
+            int childIndex = -1;
+
+            // Linear scan to find if we already have a path for this byte
+            for (int i = 0; i < keys.length; i++) {
+                if (keys[i] == currentByte) {
+                    childIndex = i;
+                    break;
+                }
+            }
+
+            // If path doesn't exist, extend the arrays (Copy-on-Write style)
+            if (childIndex == -1) {
+                childIndex = keys.length;
+                keys = Arrays.copyOf(keys, keys.length + 1);
+                children = Arrays.copyOf(children, children.length + 1);
+                
+                keys[childIndex] = currentByte;
+                children[childIndex] = new ByteTrieNode();
+            }
+
+            // Recurse down
+            children[childIndex].add(signature, index + 1, parser, rule);
+        }
+
+        Function<ByteBuffer, DecodedImage> find(ByteBuffer buffer) {
+            ByteTrieNode currentNode = this;
+            Function<ByteBuffer, DecodedImage> lastValidParser = null;
+            
+            // We walk the buffer without modifying its position
+            for (int i = 0; i < buffer.remaining(); i++) {
+                byte b = buffer.get(i);
+                int nextIndex = -1;
+
+                // Find child for byte 'b'
+                for (int k = 0; k < currentNode.keys.length; k++) {
+                    if (currentNode.keys[k] == b) {
+                        nextIndex = k;
+                        break;
+                    }
+                }
+
+                if (nextIndex == -1) {
+                    // Dead end. Return the deepest parser we found along the way.
+                    // This handles cases where a file might have extra data after the signature
+                    // but matched a valid shorter signature.
+                    return lastValidParser;
+                }
+
+                // Move down
+                currentNode = currentNode.children[nextIndex];
+
+                // If this node is a valid endpoint, remember it
+                if (currentNode.parser != null) {
+                    lastValidParser = currentNode.parser;
+                }
+            }
+            
+            return lastValidParser;
+        }
+    }
 
 
     /**
@@ -46,11 +131,7 @@ public final class TextureLoader {
      */
     public static void registerFormat(String magicNumber, Function<ByteBuffer, DecodedImage> imageProcessor, CollisionRule collisionRule) {
         var magicNumberKey = toHex(magicNumber);
-
-        switch (collisionRule) {
-            case IGNORE -> FORMAT_REGISTRY.putIfAbsent(magicNumberKey, imageProcessor);
-            case OVERWRITE -> FORMAT_REGISTRY.put(magicNumberKey, imageProcessor);
-        }
+        ROOT.add(magicNumberKey, 0, imageProcessor, collisionRule);
     }
 
     /**
@@ -72,36 +153,21 @@ public final class TextureLoader {
         try(var channel = FileChannel.open(file.toPath(), StandardOpenOption.READ)) {
             var mbb = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
 
-
-            // Welcome to suggestions on a better method of parsing out the key please be my guest
-            // Tackle this all later.
-            for (var key : FORMAT_REGISTRY.keySet()) {
-                var parsedKey = new byte[key.length];
-                mbb.get(0, parsedKey);
-
-                var parser = FORMAT_REGISTRY.get(parsedKey);
-
-                if (parser != null) {
-                    return parser.apply(mbb);
-                }
+            // 0 Allocations just walk.
+            var parser = ROOT.find(mbb);
+            
+            if (parser != null) {
+                return parser.apply(mbb);
             }
 
         } catch (IOException exception) {
             System.out.println("Error loading file: " + file.toPath() + " into channel.");
             exception.printStackTrace();
         } catch (Exception e) {
-            throw new RuntimeException("uhh");
+            throw new RuntimeException("uhh", e);
         }
 
         return null;
-    }
-
-    /**
-     * Get an immutable copy of the format registry.
-     * @return immutable copy of format registry
-     */
-    public static Map<byte[], Function<ByteBuffer, DecodedImage>> registry() {
-        return Collections.unmodifiableMap(FORMAT_REGISTRY);
     }
 
     static DecodedImage empty(ByteBuffer stream) {
@@ -118,8 +184,8 @@ public final class TextureLoader {
 
         registerFormat("42 4D", TextureLoader::empty, CollisionRule.IGNORE); // BMP
 
-        registerFormat("49 49 2A 00", TextureLoader::empty, CollisionRule.IGNORE); // BMP
-        registerFormat("4D 4D 00 2A", TextureLoader::empty, CollisionRule.IGNORE); // BMP
+        registerFormat("49 49 2A 00", TextureLoader::empty, CollisionRule.IGNORE); // TIFF (Little Endian)
+        registerFormat("4D 4D 00 2A", TextureLoader::empty, CollisionRule.IGNORE); // TIFF (Big Endian)
 
     }
 }

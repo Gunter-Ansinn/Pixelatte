@@ -4,9 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats.">
+    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Made sure tests images properly migrated to test folder. Moved some values to threadLocals.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/acTL.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/fcTL.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/sBIT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/DecodedImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage16.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/DecodedImage16.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage8.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/DecodedImage8.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/Empty.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpacker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/ImagePreviewTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/ImagePreviewTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/comparisons/ComparisonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/comparisons/ComparisonUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/TestImageParse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/TestImageParse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpackerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpackerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpackerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpackerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpackerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,9 +67,9 @@
       <list>
         <option value="Enum" />
         <option value="JUnit5 Test Class" />
-        <option value="Record" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -433,7 +457,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768846978346</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Made sure tests images properly migrated to test folder. Moved some values to threadLocals.">
+      <option name="closed" value="true" />
+      <created>1768854976599</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1768854976600</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -468,7 +500,8 @@
     <MESSAGE value="Optimized chunkMap slightly by reducing list allocations. Also changed PNG parser to remove memory spiking." />
     <MESSAGE value="Optimized unpackers with pre-computed LUD tables and Vector operations where possible" />
     <MESSAGE value="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats." />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats." />
+    <MESSAGE value="Made sure tests images properly migrated to test folder. Moved some values to threadLocals." />
+    <option name="LAST_COMMIT_MESSAGE" value="Made sure tests images properly migrated to test folder. Moved some values to threadLocals." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

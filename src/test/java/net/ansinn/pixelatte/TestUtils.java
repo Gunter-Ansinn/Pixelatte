@@ -1,5 +1,7 @@
 package net.ansinn.pixelatte;
 
+import net.ansinn.pixelatte.output.DecodedImage8;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;

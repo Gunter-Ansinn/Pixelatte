@@ -1,4 +1,4 @@
-package net.ansinn.pixelatte;
+package net.ansinn.pixelatte.output;
 
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 

@@ -1,11 +1,10 @@
 package net.ansinn.pixelatte;
 
+import net.ansinn.pixelatte.output.DecodedImage8;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import static net.ansinn.pixelatte.TestUtils.mapRes2File;
 import static org.junit.jupiter.api.Assertions.assertTrue;
