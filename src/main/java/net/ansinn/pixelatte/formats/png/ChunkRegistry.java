@@ -3,10 +3,7 @@ package net.ansinn.pixelatte.formats.png;
 import net.ansinn.ByteBarista.SimpleRecordDecoder;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.RawChunk;
-import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
-import net.ansinn.pixelatte.formats.png.layout.chunks.PLTE;
-import net.ansinn.pixelatte.formats.png.layout.chunks.gAMA;
-import net.ansinn.pixelatte.formats.png.layout.chunks.tRNS;
+import net.ansinn.pixelatte.formats.png.layout.chunks.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -25,6 +22,23 @@ public class ChunkRegistry {
         register("gAMA", gAMA.class);
         register("tRNS", tRNS::provider);
         register("PLTE", PLTE::provider);
+
+        // Simple / Automatic Records
+        register("cHRM", cHRM.class);
+        register("sRGB", sRGB.class);
+        register("pHYs", pHYs.class);
+        register("tIME", tIME.class);
+        register("acTL", acTL.class);
+        register("fcTL", fcTL.class);
+
+        // Deferred / Provider-based Records
+        register("bKGD", bKGD::provider);
+        register("sBIT", sBIT::provider);
+        register("hIST", hIST::provider);
+        register("iCCP", iCCP::provider);
+        register("tEXt", tEXt::provider);
+        register("zTXt", zTXt::provider);
+        register("iTXt", iTXt::provider);
     }
 
     public static <T extends Record & Chunk> void register(String chunkName, Class<T> chunkClazz) {
