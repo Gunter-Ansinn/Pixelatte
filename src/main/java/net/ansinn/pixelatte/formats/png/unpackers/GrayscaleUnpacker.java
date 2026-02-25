@@ -1,8 +1,8 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage;
-import net.ansinn.pixelatte.output.DecodedImage16;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage;
+import net.ansinn.pixelatte.output.safe.StaticImage16;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 import net.ansinn.pixelatte.formats.png.layout.chunks.tRNS;
@@ -10,7 +10,7 @@ import net.ansinn.pixelatte.formats.png.layout.chunks.tRNS;
 import java.util.stream.IntStream;
 
 public class GrayscaleUnpacker {
-    public static DecodedImage unpackGrayscale(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    public static StaticImage unpackGrayscale(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         return switch (header.bitDepth()) {
             case 1 -> unpackGrayscale1Bit(filtered, header, chunkMap);
             case 2 -> unpackGrayscale2Bit(filtered, header, chunkMap);
@@ -22,7 +22,7 @@ public class GrayscaleUnpacker {
         };
     }
 
-    private static DecodedImage unpackGrayscale1Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscale1Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var pixels = new byte[width * height * 4];
@@ -52,10 +52,10 @@ public class GrayscaleUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.GRAY8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.GRAY8, chunkMap);
     }
 
-    private static DecodedImage unpackGrayscale2Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscale2Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var pixels = new byte[width * height * 4];
@@ -85,17 +85,17 @@ public class GrayscaleUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.GRAY8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.GRAY8, chunkMap);
     }
 
-    private static DecodedImage unpackGrayscale4Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscale4Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         int width = header.width();
         int height = header.height();
         byte[] pixels = new byte[width * height * 4];
         var transparency = chunkMap.getFirst(tRNS.Grayscale.class);
 
         IntStream.range(0, height).parallel().forEach(y -> {
-            int rowIn = y * ((width + 1) / 2); // each byte = 2 pixels
+            int rowIn = y * ((width + 1) / 2); // each byte = 2 data
             int rowOut = y * width * 4;
             int x = 0;
 
@@ -120,10 +120,10 @@ public class GrayscaleUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.GRAY8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.GRAY8, chunkMap);
     }
 
-    private static DecodedImage unpackGrayscale8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscale8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var pixels = new byte[width * height * 4];
@@ -149,10 +149,10 @@ public class GrayscaleUnpacker {
 
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.GRAY8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.GRAY8, chunkMap);
     }
 
-    private static DecodedImage unpackGrayscale16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscale16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         int width = header.width();
         int height = header.height();
         short[] pixels = new short[width * height * 4];
@@ -165,20 +165,20 @@ public class GrayscaleUnpacker {
             for (int x = 0; x < width; x++) {
                 int inOffset = rowIn + x * 2;
                 int gray16 = ((filtered[inOffset] & 0xFF) << 8) | (filtered[inOffset + 1] & 0xFF);
-                int gray = gray16 >> 8; // take high byte only
-                int alpha = 0xFFFF;
+
+                int alpha = (short) 0xFFFF;
 
                 if (transparency.isPresent() && gray16 == transparency.get().grayValue())
                     alpha = 0;
 
                 int out = rowOut + x * 4;
-                pixels[out] = (byte) gray;
-                pixels[out + 1] = (byte) gray;
-                pixels[out + 2] = (byte) gray;
-                pixels[out + 3] = (byte) alpha;
+                pixels[out] = (short) gray16;
+                pixels[out + 1] = (short) gray16;
+                pixels[out + 2] = (short) gray16;
+                pixels[out + 3] = (short) alpha;
             }
         });
 
-        return new DecodedImage16(width, height, pixels, DecodedImage.Format.GRAY16, chunkMap);
+        return new StaticImage16(width, height, pixels, StaticImage.Format.GRAY16, chunkMap);
     }
 }

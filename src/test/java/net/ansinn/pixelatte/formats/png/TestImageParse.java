@@ -1,6 +1,6 @@
 package net.ansinn.pixelatte.formats.png;
 
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.TextureLoader;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ public class TestImageParse {
     void loadImage() {
         System.out.println("Hello?");
 
-        var result = mapRes2File("/png_tests/basn0g01.png");
+        var result = mapRes2File("/png_tests/basic_formats/basn0g01.png");
         System.out.println("Hello2");
 
         if (result.isPresent()) {
@@ -56,7 +56,7 @@ public class TestImageParse {
                     File file = path.toFile();
 
                     // Decode with Pixelatte
-                    var decoded = (DecodedImage8) TextureLoader.readFile(file);
+                    var decoded = (StaticImage8) TextureLoader.readFile(file);
                     assertNotNull(decoded);
 
                     // Decode with ImageIO
@@ -68,7 +68,7 @@ public class TestImageParse {
                     assertEquals(expected.getWidth(), decoded.width(), "Width mismatch: " + path.getFileName());
                     assertEquals(expected.getHeight(), decoded.height(), "Height mismatch: " + path.getFileName());
 
-                    // Compare pixels
+                    // Compare data
                     int width = expected.getWidth();
                     int height = expected.getHeight();
 

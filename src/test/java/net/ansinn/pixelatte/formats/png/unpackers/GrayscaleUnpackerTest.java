@@ -1,6 +1,6 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -19,9 +19,9 @@ public class GrayscaleUnpackerTest {
         var filtered = new byte[] { (byte) 0b10101010 }; // Provide filtered scanline (already unfiltered!)
         var chunkMap = new ChunkMap();
 
-        var image = (DecodedImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var image = (StaticImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
 
-        var pixels = image.pixels();
+        var pixels = image.data();
 
         for (int i = 0; i < 8; i++) {
             int gray = (i % 2 == 0) ? 255 : 0;
@@ -40,8 +40,8 @@ public class GrayscaleUnpackerTest {
         byte[] filtered = new byte[] { (byte) 0b00011011 };
         var chunkMap = new ChunkMap();
 
-        var image = (DecodedImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var pixels = image.data();
         var expected = new int[]{ 0, 85, 170, 255};
 
         for (int i = 0; i < 4; i++) {
@@ -62,8 +62,8 @@ public class GrayscaleUnpackerTest {
         var filtered = new byte[] { (byte) 0b00010001 }; // values: 0, 1 → grayscale: 0, 17
         var chunkMap = new ChunkMap();
 
-        var image = (DecodedImage8)GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8)GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var pixels = image.data();
         var expected = new int[]{ 17, 17 };
 
         for (int i = 0; i < 2; i++) {
@@ -83,8 +83,8 @@ public class GrayscaleUnpackerTest {
         byte[] filtered = new byte[] { (byte) 0, (byte) 127, (byte) 255 };
         var chunkMap = new ChunkMap();
 
-        var image = (DecodedImage8)GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8)GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for (int i = 0; i < 3; i++) {
             int offset = i * 4;
@@ -108,8 +108,8 @@ public class GrayscaleUnpackerTest {
         };
         var chunkMap = new ChunkMap();
 
-        var image = (DecodedImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var pixels = image.data();
         int[] expected = { 0, 127, 255 };
 
         for (int i = 0; i < 3; i++) {
@@ -134,8 +134,8 @@ public class GrayscaleUnpackerTest {
         var chunkMap = new ChunkMap();
         chunkMap.addChunk(transparency);
 
-        var image = (DecodedImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for (int i = 0; i < 3; i++) {
             int offset = i * 4;
@@ -162,8 +162,8 @@ public class GrayscaleUnpackerTest {
         var chunkMap = new ChunkMap();
         chunkMap.addChunk(transparency);
 
-        var image = (DecodedImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
+        var pixels = image.data();
 
         // Expect: first pixel alpha = 0, second = 255
         var expectedGray = new int[]{ 0x12, 0x56 }; // high byte downscaled

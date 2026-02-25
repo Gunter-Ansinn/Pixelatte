@@ -1,15 +1,15 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage;
-import net.ansinn.pixelatte.output.DecodedImage16;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage;
+import net.ansinn.pixelatte.output.safe.StaticImage16;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
 import java.util.stream.IntStream;
 
 public class GrayscaleAlphaUnpacker {
-    public static DecodedImage unpackGrayscaleAlpha(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    public static StaticImage unpackGrayscaleAlpha(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         return switch (header.bitDepth()) {
             case 8 -> unpackGrayscaleAlpha8Bit(filtered, header, chunkMap);
             case 16 -> unpackGrayscaleAlpha16Bit(filtered, header, chunkMap);
@@ -18,7 +18,7 @@ public class GrayscaleAlphaUnpacker {
         };
     }
 
-    private static DecodedImage unpackGrayscaleAlpha8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscaleAlpha8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 2;
@@ -42,10 +42,10 @@ public class GrayscaleAlphaUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.GRAY8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.GRAY8, chunkMap);
     }
 
-    private static DecodedImage unpackGrayscaleAlpha16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackGrayscaleAlpha16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 4; // 2 bytes for grat + 2 bytes for alpha
@@ -70,6 +70,6 @@ public class GrayscaleAlphaUnpacker {
             }
         });
 
-        return new DecodedImage16(width, height, pixels, DecodedImage.Format.GRAY16, chunkMap);
+        return new StaticImage16(width, height, pixels, StaticImage.Format.GRAY16, chunkMap);
     }
 }
