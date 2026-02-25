@@ -1,7 +1,7 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 import net.ansinn.pixelatte.formats.png.layout.chunks.PLTE;
@@ -17,21 +17,21 @@ public class IndexedUnpacker {
 
     static {
         for (var byteIndex = 0; byteIndex < 256; byteIndex++) {
-            // 1-bit: 8 pixels per byte
+            // 1-bit: 8 data per byte
             for (int bit = 0; bit < 8; bit++)
                 LUT_1BIT[byteIndex][bit] = (byte) ((byteIndex >> (7 - bit)) & 0x01);
 
-            // 2-bit: 4 pixels per byte
+            // 2-bit: 4 data per byte
             for (int bit = 0; bit < 4; bit++)
                 LUT_2BIT[byteIndex][bit] = (byte) ((byteIndex >> (6 - bit * 2)) & 0x03);
 
-            // 4-bit: 2 pixels per byte
+            // 4-bit: 2 data per byte
             for (int bit = 0; bit < 2; bit++)
                 LUT_4BIT[byteIndex][bit] = (byte) ((byteIndex >> (4 - bit * 4)) & 0x0F);
         }
     }
 
-    public static DecodedImage unpackIndexed(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    public static StaticImage unpackIndexed(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         return switch (header.bitDepth()) {
             case 1 -> unpackIndexed1Bit(filtered, header, chunkMap);
             case 2 -> unpackIndexed2Bit(filtered, header, chunkMap);
@@ -42,7 +42,7 @@ public class IndexedUnpacker {
         };
     }
 
-    private static DecodedImage unpackIndexed1Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackIndexed1Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var palette = chunkMap.getFirst(PLTE.class)
@@ -81,10 +81,10 @@ public class IndexedUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.RGBA8, chunkMap);
     }
 
-    private static DecodedImage unpackIndexed2Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackIndexed2Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var palette = chunkMap.getFirst(PLTE.class)
@@ -122,10 +122,10 @@ public class IndexedUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.RGBA8, chunkMap);
     }
 
-    private static DecodedImage unpackIndexed4Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackIndexed4Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var palette = chunkMap.getFirst(PLTE.class)
@@ -161,10 +161,10 @@ public class IndexedUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.RGBA8, chunkMap);
     }
 
-    private static DecodedImage unpackIndexed8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackIndexed8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var palette = chunkMap.getFirst(PLTE.class)
@@ -196,6 +196,6 @@ public class IndexedUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.RGBA8, chunkMap);
     }
 }

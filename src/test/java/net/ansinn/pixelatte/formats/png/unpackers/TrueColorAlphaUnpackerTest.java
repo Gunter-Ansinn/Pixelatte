@@ -1,7 +1,7 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage16;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage16;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -23,8 +23,8 @@ public class TrueColorAlphaUnpackerTest {
 
         // Define our transparent pixel color then add it to the chunk map
         var chunkMap = new ChunkMap();
-        var image = (DecodedImage8) TrueColorAlphaUnpacker.unpackTrueColorAlpha(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) TrueColorAlphaUnpacker.unpackTrueColorAlpha(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for(var i = 0; i < 2; i++) {
             int inOffset = i * 4;
@@ -48,8 +48,8 @@ public class TrueColorAlphaUnpackerTest {
 
         // Define our transparent pixel color then add it to the chunk map
         var chunkMap = new ChunkMap();
-        var image = (DecodedImage16) TrueColorAlphaUnpacker.unpackTrueColorAlpha(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage16) TrueColorAlphaUnpacker.unpackTrueColorAlpha(filtered, header, chunkMap);
+        var pixels = image.data();
 
         var expected = new short[][] {
                 {255, 0, 0, 128},

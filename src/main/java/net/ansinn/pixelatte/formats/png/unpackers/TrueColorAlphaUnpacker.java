@@ -4,9 +4,9 @@ import jdk.incubator.vector.ByteVector;
 import jdk.incubator.vector.ShortVector;
 import jdk.incubator.vector.VectorShuffle;
 import jdk.incubator.vector.VectorSpecies;
-import net.ansinn.pixelatte.output.DecodedImage;
-import net.ansinn.pixelatte.output.DecodedImage16;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage;
+import net.ansinn.pixelatte.output.safe.StaticImage16;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 
@@ -17,7 +17,7 @@ public class TrueColorAlphaUnpacker {
     private static final VectorSpecies<Byte> BYTE_SPECIES = ByteVector.SPECIES_PREFERRED;
     private static final VectorSpecies<Short> SHORT_SPECIES = ShortVector.SPECIES_PREFERRED;
 
-    public static DecodedImage unpackTrueColorAlpha(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    public static StaticImage unpackTrueColorAlpha(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         return switch (header.bitDepth()) {
             case 8 -> unpackTrueColorAlpha8Bit(filtered, header, chunkMap);
             case 16 -> unpackTrueColorAlpha16Bit(filtered, header, chunkMap);
@@ -26,7 +26,7 @@ public class TrueColorAlphaUnpacker {
         };
     }
 
-    private static DecodedImage unpackTrueColorAlpha8Bit(final byte[] filtered, final IHDR header, final ChunkMap chunkMap) {
+    private static StaticImage unpackTrueColorAlpha8Bit(final byte[] filtered, final IHDR header, final ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 4;
@@ -34,10 +34,10 @@ public class TrueColorAlphaUnpacker {
 
         System.arraycopy(filtered, 0, pixels, 0, width * height * 4);
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.RGBA8, chunkMap);
     }
 
-    private static DecodedImage unpackTrueColorAlpha16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackTrueColorAlpha16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 8;
@@ -84,6 +84,6 @@ public class TrueColorAlphaUnpacker {
             }
         });
 
-        return new DecodedImage16(width, height, pixels, DecodedImage.Format.RGBA16, chunkMap);
+        return new StaticImage16(width, height, pixels, StaticImage.Format.RGBA16, chunkMap);
     }
 }

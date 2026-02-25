@@ -1,6 +1,6 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -26,8 +26,8 @@ public class IndexedUnpackerTest {
         });
 
         var chunkMap = new ChunkMap().addChunk(palette);
-        var image = (DecodedImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for (int index = 0; index < 8; index++) {
             var offset = index * 4;
@@ -59,8 +59,8 @@ public class IndexedUnpackerTest {
         });
 
         var chunkMap = new ChunkMap().addChunk(palette);
-        var image = (DecodedImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for (var i = 0; i < 4; i++) {
             var offset = i * 4;
@@ -86,8 +86,8 @@ public class IndexedUnpackerTest {
         });
 
         var chunkMap = new ChunkMap().addChunk(palette);
-        var image = (DecodedImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
+        var pixels = image.data();
 
         var expected = new Chunk.ColorData[]{ palette.colors()[1], palette.colors()[0] };
 
@@ -116,8 +116,8 @@ public class IndexedUnpackerTest {
         });
 
         var chunkMap = new ChunkMap().addChunk(palette);
-        var image = (DecodedImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) IndexedUnpacker.unpackIndexed(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for (var i = 0; i < 2; i++) {
             var offset = i * 4;

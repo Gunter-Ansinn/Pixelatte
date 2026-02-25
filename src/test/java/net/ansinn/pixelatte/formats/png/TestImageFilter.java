@@ -27,7 +27,7 @@ public class TestImageFilter {
 
     @Test
     void process_filterSub_shouldApplyCorrectly() {
-        // 2 pixels, 3 bytes/pixel (TrueColor 8bit)
+        // 2 data, 3 bytes/pixel (TrueColor 8bit)
         // Row: [Filter(1), P1_R, P1_G, P1_B, P2_R, P2_G, P2_B]
         // P1 has no left, so raw P1 = result P1
         // P2 has left P1, so result P2 = raw P2 + result P1
@@ -119,7 +119,7 @@ public class TestImageFilter {
     
     @Test
     void process_mixedFilters() {
-        // 2 pixels wide, 2 rows high. 1 byte/pixel (Grayscale 8bit).
+        // 2 data wide, 2 rows high. 1 byte/pixel (Grayscale 8bit).
         // Row 1: Sub(1). [1, 10, 5]
         //        P1: Raw 10. Left 0. Res=10.
         //        P2: Raw 5. Left 10. Res=15.

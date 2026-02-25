@@ -1,7 +1,7 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage16;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage16;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
@@ -20,8 +20,8 @@ public class GrayscaleAlphaUnpackerTest {
         };
 
         var chunkMap = new ChunkMap();
-        var image = (DecodedImage8) GrayscaleAlphaUnpacker.unpackGrayscaleAlpha(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage8) GrayscaleAlphaUnpacker.unpackGrayscaleAlpha(filtered, header, chunkMap);
+        var pixels = image.data();
 
         for (int i = 0; i < 2; i++) {
             int offset = i * 4;
@@ -44,8 +44,8 @@ public class GrayscaleAlphaUnpackerTest {
         };
 
         var chunkMap = new ChunkMap();
-        var image = (DecodedImage16) GrayscaleAlphaUnpacker.unpackGrayscaleAlpha(filtered, header, chunkMap);
-        var pixels = image.pixels();
+        var image = (StaticImage16) GrayscaleAlphaUnpacker.unpackGrayscaleAlpha(filtered, header, chunkMap);
+        var pixels = image.data();
 
         var expected = new short[] {
                 50,50,50, 255,

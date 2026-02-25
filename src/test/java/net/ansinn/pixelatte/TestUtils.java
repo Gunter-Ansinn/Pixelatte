@@ -1,6 +1,6 @@
 package net.ansinn.pixelatte;
 
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,10 +33,10 @@ public class TestUtils {
         return Optional.empty();
     }
 
-    public static BufferedImage toBufferedImage(DecodedImage8 image) {
+    public static BufferedImage toBufferedImage(StaticImage8 image) {
         int width = image.width();
         int height = image.height();
-        byte[] pixels = image.pixels();
+        byte[] pixels = image.data();
 
         BufferedImage buffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 

@@ -1,8 +1,8 @@
 package net.ansinn.pixelatte.formats.png.unpackers;
 
-import net.ansinn.pixelatte.output.DecodedImage;
-import net.ansinn.pixelatte.output.DecodedImage16;
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage;
+import net.ansinn.pixelatte.output.safe.StaticImage16;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 import net.ansinn.pixelatte.formats.png.layout.chunks.tRNS;
@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 public class TrueColorUnpacker {
 
-    public static DecodedImage unpackTrueColor(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    public static StaticImage unpackTrueColor(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         return switch (header.bitDepth()) {
             case 8 -> unpackTrueColor8Bit(filtered, header, chunkMap);
             case 16 -> unpackTrueColor16Bit(filtered, header, chunkMap);
@@ -20,7 +20,7 @@ public class TrueColorUnpacker {
         };
     }
 
-    public static DecodedImage unpackTrueColor8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    public static StaticImage unpackTrueColor8Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 3;
@@ -54,10 +54,10 @@ public class TrueColorUnpacker {
             }
         });
 
-        return new DecodedImage8(width, height, pixels, DecodedImage.Format.RGBA8, chunkMap);
+        return new StaticImage8(width, height, pixels, StaticImage.Format.RGBA8, chunkMap);
     }
 
-    private static DecodedImage unpackTrueColor16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
+    private static StaticImage unpackTrueColor16Bit(byte[] filtered, IHDR header, ChunkMap chunkMap) {
         var width = header.width();
         var height = header.height();
         var bpp = 6;
@@ -77,7 +77,7 @@ public class TrueColorUnpacker {
                 var green16 = ((filtered[inOffset + 2] & 0xFF) << 8) | (filtered[inOffset + 3] & 0xFF);
                 var blue16 = ((filtered[inOffset + 4] & 0xFF) << 8) | (filtered[inOffset + 5] & 0xFF);
 
-                var alpha = 0xFF;
+                var alpha = 0xFFFF;
                 // Compare against 16 bit values for transparency
                 if (transparency.isPresent()) {
                     var t = transparency.get();
@@ -93,7 +93,7 @@ public class TrueColorUnpacker {
             }
         });
 
-        return new DecodedImage16(width, height, pixels, DecodedImage.Format.RGBA16, chunkMap);
+        return new StaticImage16(width, height, pixels, StaticImage.Format.RGBA16, chunkMap);
     }
 
 }
