@@ -1,6 +1,6 @@
 package net.ansinn.pixelatte.comparisons;
 
-import net.ansinn.pixelatte.output.DecodedImage8;
+import net.ansinn.pixelatte.output.safe.StaticImage8;
 import net.ansinn.pixelatte.Main;
 
 import javax.imageio.ImageIO;
@@ -32,10 +32,10 @@ public final class ComparisonUtils {
 
         var pixels = image.getRGB(0,0,width,height, null, 0, width);
 
-        System.out.println("pixels = " + Arrays.toString(pixels));
+        System.out.println("data = " + Arrays.toString(pixels));
     }
 
-    public static void printImage(DecodedImage8 image) {
+    public static void printImage(StaticImage8 image) {
 
     }
 }

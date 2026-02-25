@@ -18,7 +18,7 @@ public record gAMA(float gamma) implements Chunk {
         var intensity = data.getInt();
         var uIntensity = Integer.toUnsignedLong(intensity);
 
-        var gamaIntensity = (float) (uIntensity / 100000);
+        var gamaIntensity = uIntensity / 100000.0f;
 
         return new gAMA(gamaIntensity);
     }

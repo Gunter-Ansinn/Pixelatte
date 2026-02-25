@@ -34,4 +34,12 @@ public class ChunkMap {
 
         return (List<T>) Collections.unmodifiableList(list);
     }
+
+    public List<? extends Chunk> getAllChunks() {
+        return chunkMap.values()
+                .parallelStream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
 }

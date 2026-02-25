@@ -83,6 +83,18 @@ public record IHDR(int width, int height, byte bitDepth, Chunk.ColorType colorTy
         return getScanlineByteLength() >= 128 && bitDepth >= 8;
     }
 
+    public IHDR withDimensions(int width, int height) {
+        return new IHDR(
+                width,
+                height,
+                bitDepth,
+                colorType,
+                compressionMethod,
+                filterMethod,
+                interlacedMethod
+        );
+    }
+
     @Override
     public String toString() {
         return "IHDR{" +

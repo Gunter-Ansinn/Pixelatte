@@ -1,12 +1,12 @@
 package net.ansinn.pixelatte.formats.png;
 
-import net.ansinn.pixelatte.output.DecodedImage;
+import net.ansinn.pixelatte.output.safe.StaticImage;
 import net.ansinn.pixelatte.formats.png.layout.ChunkMap;
 import net.ansinn.pixelatte.formats.png.layout.chunks.IHDR;
 import net.ansinn.pixelatte.formats.png.unpackers.*;
 
 public class PNGUnpacker {
-    public static DecodedImage unpack(final byte[] filtered, final IHDR header, final ChunkMap chunkMap) {
+    public static StaticImage unpack(final byte[] filtered, final IHDR header, final ChunkMap chunkMap) {
         return switch (header.colorType()) {
             case Grayscale -> GrayscaleUnpacker.unpackGrayscale(filtered, header, chunkMap);
             case TrueColor -> TrueColorUnpacker.unpackTrueColor(filtered, header, chunkMap);
