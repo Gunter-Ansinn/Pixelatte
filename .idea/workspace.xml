@@ -4,33 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Made sure tests images properly migrated to test folder. Moved some values to threadLocals.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/acTL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/fcTL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/sBIT.java" afterDir="false" />
+    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/editing/ImageTransform.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/APNGParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ParserResources.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/loader/LoaderBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/ImageMeta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/Frame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/GrayScale8.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/Grayscale.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/PixelResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/unsafe/OffHeapImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/DecodedImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage16.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/DecodedImage16.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/DecodedImage8.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/DecodedImage8.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/Empty.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/ImagePreviewTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/ImagePreviewTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/TestUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/ChunkMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/ChunkMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/IHDR.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/IHDR.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/acTL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/acTL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/fcTL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/fcTL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/gAMA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/gAMA.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/comparisons/ComparisonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/comparisons/ComparisonUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/TestImageParse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/TestImageParse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleAlphaUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/GrayscaleUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/IndexedUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorAlphaUnpackerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpackerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/formats/png/unpackers/TrueColorUnpackerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,9 +63,9 @@
       <list>
         <option value="Enum" />
         <option value="JUnit5 Test Class" />
+        <option value="Record" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Record" />
       </list>
     </option>
   </component>
@@ -107,8 +103,11 @@
     "Gradle.DynamicRecordDecoderTest.simpleDecoderTest.executor": "Run",
     "Gradle.Grayscale.executor": "Run",
     "Gradle.GrayscaleAlphaUnpackerTest.executor": "Run",
+    "Gradle.ImagePreviewTest.executor": "Run",
     "Gradle.ImagePreviewTest.previewAll.executor": "Run",
+    "Gradle.ImageTransformTest.visualPipelineDebug.executor": "Run",
     "Gradle.IndexedUnpackerTest.executor": "Run",
+    "Gradle.ProbeTest.executor": "Run",
     "Gradle.Test8Bit.basn0g08.executor": "Run",
     "Gradle.TestImageFilter.executor": "Run",
     "Gradle.TestImageFilter.filterAverage_bpp3_shouldApplyCorrectly.executor": "Run",
@@ -145,6 +144,9 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/png_tests" />
+      <recent name="$PROJECT_DIR$/src/test/resources/" />
+      <recent name="$PROJECT_DIR$/src/test/resources/png_tests/basic_formats" />
       <recent name="$PROJECT_DIR$/src/main/java/net/ansinn" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
@@ -165,7 +167,7 @@
       <recent name="net.ansinn.pixelatte" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.BenchmarkTest.benchmarkParsers">
+  <component name="RunManager" selected="Gradle.ImageTransformTest.visualPipelineDebug">
     <configuration name="BenchmarkTest.benchmarkParsers" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -190,7 +192,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="ImagePreviewTest.previewAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="ImagePreviewTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -203,7 +205,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.ImagePreviewTest.previewAll&quot;" />
+            <option value="&quot;net.ansinn.pixelatte.ImagePreviewTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -214,7 +216,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="Test8Bit.basn0g08" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="ImageTransformTest.visualPipelineDebug" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -227,7 +229,31 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.comparisons.Test8Bit.basn0g08&quot;" />
+            <option value="&quot;net.ansinn.pixelatte.editing.ImageTransformTest.visualPipelineDebug&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="ProbeTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;net.ansinn.pixelatte.ProbeTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -262,37 +288,13 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="TestImageParse.compareAgainstImageIO" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;net.ansinn.pixelatte.TestImageParse.compareAgainstImageIO&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.ImageTransformTest.visualPipelineDebug" />
+        <item itemvalue="Gradle.ImagePreviewTest" />
+        <item itemvalue="Gradle.ProbeTest" />
         <item itemvalue="Gradle.BenchmarkTest.benchmarkParsers" />
         <item itemvalue="Gradle.TestImageFilter" />
-        <item itemvalue="Gradle.ImagePreviewTest.previewAll" />
-        <item itemvalue="Gradle.TestImageParse.compareAgainstImageIO" />
-        <item itemvalue="Gradle.Test8Bit.basn0g08" />
       </list>
     </recent_temporary>
   </component>
@@ -465,7 +467,55 @@
       <option name="project" value="LOCAL" />
       <updated>1768854976600</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Sorted output formats out of root pixelatte directory to reduce clutter.">
+      <option name="closed" value="true" />
+      <created>1768869588444</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1768869588444</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Added remaining ancillary chunks from PNG spec and began implementing chunks for APNG support.">
+      <option name="closed" value="true" />
+      <created>1768869634032</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1768869634032</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Cleanup for future:&#10; Refactored:&#10; - All example images into a PNG specific folder&#10; Removed:&#10; - DecodedImage.java&#10; - DecodedImage8.java&#10; - DecodedImage16.java">
+      <option name="closed" value="true" />
+      <created>1771977436052</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1771977436052</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Test fixes because i broke them in the last version:&#10; Changed:&#10; - ImagePreviewTest">
+      <option name="closed" value="true" />
+      <created>1771977573110</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1771977573110</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Made Bit depths an inherent part of image typing:&#10; Added:&#10;  - BitDepth interface, defines the data type and creates common ancestor&#10;  - BitDepth.Bit8 provides data as bytes&#10;  - BitDepth.Bit16 provides data as shorts&#10; Refactored:&#10;  - DecodedImage into StaticImage&#10;  - StaticImage8 now implements BitDepth.Bit8&#10;  - StaticImage now implements BitDepth.Bit16">
+      <option name="closed" value="true" />
+      <created>1771978185650</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1771978185650</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage">
+      <option name="closed" value="true" />
+      <created>1771978658888</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1771978658888</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -480,8 +530,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Quick and Dirty CLI" />
-    <MESSAGE value="Buildscript and Main changes" />
     <MESSAGE value="Add README.md" />
     <MESSAGE value="Add LICENSE" />
     <MESSAGE value="Add PNG format testers&#10;Added:&#10; - PNG format image testers&#10; - Add beginnings of method and class to dispatch PNG parsing" />
@@ -501,7 +549,13 @@
     <MESSAGE value="Optimized unpackers with pre-computed LUD tables and Vector operations where possible" />
     <MESSAGE value="Moved Test assets out of main so they're excluded from the final JAR. Re-added Image filtering tests. Refactored tests a bit to be more relevant to their formats." />
     <MESSAGE value="Made sure tests images properly migrated to test folder. Moved some values to threadLocals." />
-    <option name="LAST_COMMIT_MESSAGE" value="Made sure tests images properly migrated to test folder. Moved some values to threadLocals." />
+    <MESSAGE value="Sorted output formats out of root pixelatte directory to reduce clutter." />
+    <MESSAGE value="Added remaining ancillary chunks from PNG spec and began implementing chunks for APNG support." />
+    <MESSAGE value="Cleanup for future:&#10; Refactored:&#10; - All example images into a PNG specific folder&#10; Removed:&#10; - DecodedImage.java&#10; - DecodedImage8.java&#10; - DecodedImage16.java" />
+    <MESSAGE value="Test fixes because i broke them in the last version:&#10; Changed:&#10; - ImagePreviewTest" />
+    <MESSAGE value="Made Bit depths an inherent part of image typing:&#10; Added:&#10;  - BitDepth interface, defines the data type and creates common ancestor&#10;  - BitDepth.Bit8 provides data as bytes&#10;  - BitDepth.Bit16 provides data as shorts&#10; Refactored:&#10;  - DecodedImage into StaticImage&#10;  - StaticImage8 now implements BitDepth.Bit8&#10;  - StaticImage now implements BitDepth.Bit16" />
+    <MESSAGE value="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

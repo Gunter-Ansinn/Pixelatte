@@ -7,6 +7,7 @@ import net.ansinn.pixelatte.formats.png.layout.Chunk;
 public record fcTL(
         @UnsignedInteger long sequenceNumber,
         @UnsignedInteger long width,
+        @UnsignedInteger long height,
         @UnsignedInteger long xOffset,
         @UnsignedInteger long yOffset,
         @UnsignedShort int delayNumerator,

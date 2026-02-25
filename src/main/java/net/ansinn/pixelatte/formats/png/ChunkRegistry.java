@@ -16,10 +16,20 @@ import java.util.function.BiFunction;
 @SuppressWarnings("SpellCheckingInspection")
 public class ChunkRegistry {
 
+    // Geneal PNG tags
+    public static final int IHDR_TAG = toTag("IHDR");
+    public static final int IDAT_TAG = toTag("IDAT");
+    public static final int IEND_TAG = toTag("IEND");
+
+    // Animated PNG tags
+    public static final int acTL_TAG = toTag("acTL");
+    public static final int fcTL_TAG = toTag("fcTL");
+    public static final int fdAT_TAG = toTag("fdAT");
+
     private static final Map<Integer, Registry> Decoders = new HashMap<>();
 
     static {
-        register("gAMA", gAMA.class);
+        register("gAMA", gAMA::provider);
         register("tRNS", tRNS::provider);
         register("PLTE", PLTE::provider);
 

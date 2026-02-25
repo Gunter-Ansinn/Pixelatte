@@ -1,10 +1,13 @@
 package net.ansinn.pixelatte;
 
 import net.ansinn.pixelatte.formats.png.PNGParser;
-import net.ansinn.pixelatte.output.DecodedImage;
+import net.ansinn.pixelatte.output.safe.PixelResource;
+import net.ansinn.pixelatte.output.safe.StaticImage;
+import net.ansinn.pixelatte.output.unsafe.OffHeapImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.foreign.Arena;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
@@ -48,9 +51,9 @@ public final class TextureLoader {
     private static class ByteTrieNode {
         byte[] keys = new byte[0];
         ByteTrieNode[] children = new ByteTrieNode[0];
-        Function<ByteBuffer, DecodedImage> parser;
+        Function<ByteBuffer, PixelResource> parser;
 
-        void add(byte[] signature, int index, Function<ByteBuffer, DecodedImage> parser, CollisionRule rule) {
+        void add(byte[] signature, int index, Function<ByteBuffer, PixelResource> parser, CollisionRule rule) {
             // Base case: We've consumed the entire signature
             if (index == signature.length) {
                 if (this.parser != null && rule == CollisionRule.IGNORE) {
@@ -85,9 +88,9 @@ public final class TextureLoader {
             children[childIndex].add(signature, index + 1, parser, rule);
         }
 
-        Function<ByteBuffer, DecodedImage> find(ByteBuffer buffer) {
+        Function<ByteBuffer, PixelResource> find(ByteBuffer buffer) {
             ByteTrieNode currentNode = this;
-            Function<ByteBuffer, DecodedImage> lastValidParser = null;
+            Function<ByteBuffer, PixelResource> lastValidParser = null;
             
             // We walk the buffer without modifying its position
             for (int i = 0; i < buffer.remaining(); i++) {
@@ -129,7 +132,7 @@ public final class TextureLoader {
      * @param magicNumber    the identifying magic number of an image format.
      * @param imageProcessor the function in charge of processing an image.
      */
-    public static void registerFormat(String magicNumber, Function<ByteBuffer, DecodedImage> imageProcessor, CollisionRule collisionRule) {
+    public static void registerFormat(String magicNumber, Function<ByteBuffer, PixelResource> imageProcessor, CollisionRule collisionRule) {
         var magicNumberKey = toHex(magicNumber);
         ROOT.add(magicNumberKey, 0, imageProcessor, collisionRule);
     }
@@ -148,7 +151,7 @@ public final class TextureLoader {
      * @param file file to memory map and quickly read
      * @return intermediary representation of an image
      */
-    public static DecodedImage readFile(File file) {
+    public static PixelResource readFile(File file) {
 
         try(var channel = FileChannel.open(file.toPath(), StandardOpenOption.READ)) {
             var mbb = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
@@ -170,7 +173,11 @@ public final class TextureLoader {
         return null;
     }
 
-    static DecodedImage empty(ByteBuffer stream) {
+    public static OffHeapImage readDirect(File file, Arena arena) {
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    static StaticImage empty(ByteBuffer stream) {
         System.out.println("Not yet implemented.");
         return null;
     }

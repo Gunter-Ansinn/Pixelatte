@@ -3,6 +3,8 @@ package net.ansinn.pixelatte.formats.png.layout.chunks;
 import net.ansinn.ByteBarista.annotations.UnsignedInteger;
 import net.ansinn.pixelatte.formats.png.layout.Chunk;
 
+import static net.ansinn.pixelatte.formats.png.ChunkRegistry.toTag;
+
 public record acTL(@UnsignedInteger long frameCount, @UnsignedInteger long playCount) implements Chunk {
 
     public acTL {
