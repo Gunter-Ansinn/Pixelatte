@@ -10,4 +10,5 @@ public interface PixelKernel {
      */
    float[] sample(float x, float y, float r, float g, float b, float a);
 
+
 }
