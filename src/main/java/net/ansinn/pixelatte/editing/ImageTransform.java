@@ -4,6 +4,10 @@ import net.ansinn.pixelatte.output.ImageMeta;
 
 import java.util.function.Consumer;
 
+/**
+ * Creates an immutable wrapper of an image
+ * @param <T>
+ */
 public class ImageTransform<T extends ImageMeta> {
 
     private final T image;
@@ -12,7 +16,7 @@ public class ImageTransform<T extends ImageMeta> {
         this.image = image;
     }
 
-    public ImageTransform<T> operation(Consumer<T> block) {
+    public ImageTransform<T> then(Consumer<T> block) {
         //noinspection unchecked
         T imageCopy = (T) this.image.copy();
 
