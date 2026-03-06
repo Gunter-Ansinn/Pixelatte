@@ -4,29 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/editing/ImageTransform.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/APNGParser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ParserResources.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/loader/LoaderBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/ImageMeta.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/Frame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/GrayScale8.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/Grayscale.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/PixelResource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/unsafe/OffHeapImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="da1abb4e-71a0-4777-a359-bdcdef96fe7f" name="Changes" comment="Every commit i forget something linked so here's the deluge:&#10; Added:&#10;  - Common Image Ancestor&#10; Refactored:">
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/editing/KernelDispatch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/editing/PixelKernel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/AlphaAware.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/TrueColor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/TextureLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/ChunkRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGUnpacker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/PNGUnpacker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/ChunkMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/ChunkMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/IHDR.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/IHDR.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/acTL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/acTL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/fcTL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/fcTL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/gAMA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/formats/png/layout/chunks/gAMA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/comparisons/ComparisonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/net/ansinn/pixelatte/comparisons/ComparisonUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/editing/ImageTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/editing/ImageTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/AnimatedImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/AnimatedImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/BitDepth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/BitDepth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/StaticImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/StaticImage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/StaticImage16.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/StaticImage16.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/StaticImage8.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/ansinn/pixelatte/output/safe/StaticImage8.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -515,7 +504,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771978658888</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Every commit i forget something linked so here's the deluge:&#10; Added:&#10;  - Common Image Ancestor&#10; Refactored:">
+      <option name="closed" value="true" />
+      <created>1771980058854</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1771980058854</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -530,7 +527,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add README.md" />
     <MESSAGE value="Add LICENSE" />
     <MESSAGE value="Add PNG format testers&#10;Added:&#10; - PNG format image testers&#10; - Add beginnings of method and class to dispatch PNG parsing" />
     <MESSAGE value="Strip out test CLI" />
@@ -555,7 +551,8 @@
     <MESSAGE value="Test fixes because i broke them in the last version:&#10; Changed:&#10; - ImagePreviewTest" />
     <MESSAGE value="Made Bit depths an inherent part of image typing:&#10; Added:&#10;  - BitDepth interface, defines the data type and creates common ancestor&#10;  - BitDepth.Bit8 provides data as bytes&#10;  - BitDepth.Bit16 provides data as shorts&#10; Refactored:&#10;  - DecodedImage into StaticImage&#10;  - StaticImage8 now implements BitDepth.Bit8&#10;  - StaticImage now implements BitDepth.Bit16" />
     <MESSAGE value="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored The remnants of DecodedImage i left out, Cleanup:&#10; Added:&#10; Refactored:&#10;  - DecodedImage into StaticImage" />
+    <MESSAGE value="Every commit i forget something linked so here's the deluge:&#10; Added:&#10;  - Common Image Ancestor&#10; Refactored:" />
+    <option name="LAST_COMMIT_MESSAGE" value="Every commit i forget something linked so here's the deluge:&#10; Added:&#10;  - Common Image Ancestor&#10; Refactored:" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

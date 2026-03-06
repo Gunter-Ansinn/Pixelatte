@@ -39,6 +39,7 @@ public record StaticImage16(
         final int channels = 4;
         int rowStride = width * channels;
         short[] tempRow = new short[rowStride];
+
         for (int y1 = 0; y1 < height / 2; y1++) {
             int y2 = height - 1 - y1;
             int row1Offset = y1 * rowStride;

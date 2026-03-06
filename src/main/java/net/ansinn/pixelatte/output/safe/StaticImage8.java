@@ -28,15 +28,6 @@ public record StaticImage8(
         return data[normalizeIndex(x, y) + 3] & 0xFF;
     }
 
-    public int getRGBA(int x, int y) {
-        var red = getRed(x, y);
-        var green = getGreen(x, y);
-        var blue = getBlue(x, y);
-        var alpha = getAlpha(x, y);
-
-        return (red << 24) | (green << 16) | (blue << 8) | alpha;
-    }
-
     public int getARGB(int x, int y) {
         var red = getRed(x, y);
         var green = getGreen(x, y);
@@ -44,21 +35,6 @@ public record StaticImage8(
         var alpha = getAlpha(x, y);
 
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
-    }
-
-    public int[] rgbaBytesToArgbInts() {
-        var result = new int[data.length / 4];
-
-        for (var index = 0; index < result.length; index++) {
-            var red = data[index * 4] & 0xFF;
-            var green = data[index * 4 + 1] & 0xFF;
-            var blue = data[index * 4 + 2] & 0xFF;
-            var alpha = data[index * 4 + 3] & 0xFF;
-
-            result[index] = (alpha << 24) | (red << 16) | (green << 8) | blue;
-        }
-
-        return result;
     }
 
     private int normalizeIndex(int x, int y) {
